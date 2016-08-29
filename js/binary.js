@@ -27810,6 +27810,7 @@ bind_validation.simple = function(form, opts) {
 };
 
 ;function submit_email() {
+    Content.populate();
     var form = $('#verify-email-form')[0];
     if (!form) {
         return;
