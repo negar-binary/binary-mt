@@ -1,6 +1,7 @@
 [
     "src/javascript/lib/jquery.js",
     "src/javascript/lib/moment/moment.js",
+    "src/javascript/lib/done-typing.js",
     "src/javascript/lib/eventsource.js",
     "src/javascript/lib/form-to-obj.js",
     "src/javascript/lib/jQuery.XDomainRequest.js",
