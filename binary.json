@@ -44,5 +44,7 @@
     "src/javascript/binary/common_functions/validation_v2.js",
     "src/javascript/binary/static_pages/static_pjax.js",
     "src/javascript/binary/validator.js",
-    "src/javascript/binary/websocket_pages/user/verify_email.js"
+    "src/javascript/binary/websocket_pages/user/verify_email.js",
+    "src/javascript/binary/websocket_pages/user/viewbalance/viewbalance.init.js",
+    "src/javascript/binary/websocket_pages/user/viewbalance/viewbalance.ui.js"
 ]

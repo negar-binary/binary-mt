@@ -27856,3 +27856,39 @@ bind_validation.simple = function(form, opts) {
         BinarySocket.send({verify_email: email, type: 'account_opening'});
     }
 }
+
+;var ViewBalance = (function () {
+    function init(){
+        BinarySocket.init(1);
+    }
+
+    return {
+        init: init
+    };
+}());
+
+;var ViewBalanceUI = (function(){
+
+    function updateBalances(response){
+        if (response.hasOwnProperty('error')) {
+            console.log(response.error.message);
+            return;
+        }
+        var balance = response.balance;
+        var currency = balance.currency;
+        if (!currency) {
+            return;
+        }
+
+        var amount = addComma(parseFloat(balance.balance));
+        var view = format_money(currency, amount);
+
+        TUser.get().balance = balance.balance;
+        $("#balance").text(view);
+        PortfolioWS.updateBalance();
+    }
+
+    return {
+        updateBalances: updateBalances
+    };
+}());
