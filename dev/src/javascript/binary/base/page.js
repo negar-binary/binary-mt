@@ -823,7 +823,6 @@ Contents.prototype = {
                 return;
             }
             if(!page.client.is_virtual()) {
-                // control-class is a fake class, only used to counteract ja-hide class
                 $('.by_client_type.client_real').removeClass('invisible');
                 $('.by_client_type.client_real').show();
 
