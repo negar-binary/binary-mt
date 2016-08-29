@@ -198,9 +198,6 @@ Client.prototype = {
     is_virtual: function() {
         return this.get_storage_value('is_virtual') === '1';
     },
-    require_reality_check: function() {
-        return this.get_storage_value('has_reality_check') === '1';
-    },
     get_storage_value: function(key) {
         return LocalStore.get('client.' + key) || '';
     },
@@ -231,8 +228,7 @@ Client.prototype = {
             if(
                 !this.get_storage_value('is_virtual') &&
                 !this.get_storage_value('allowed_markets') &&
-                Cookies.get('residence') &&
-                !this.get_storage_value('has_reality_check')
+                Cookies.get('residence')
             ) {
                 $('#topMenuStartBetting').addClass('invisible');
                 BinarySocket.send({
@@ -265,11 +261,9 @@ Client.prototype = {
         if (!response.hasOwnProperty('error')) {
             var allowed_markets = response.legal_allowed_markets;
             var company = response.name;
-            var has_reality_check = response.has_reality_check;
 
             this.set_storage_value('allowed_markets', allowed_markets.length === 0 ? '' : allowed_markets.join(','));
             this.set_storage_value('landing_company_name', company);
-            this.set_storage_value('has_reality_check', has_reality_check);
 
             page.header.menu.register_dynamic_links();
         }
@@ -297,8 +291,7 @@ Client.prototype = {
     },
     clear_storage_values: function() {
         var that  = this;
-        var items = ['currencies', 'allowed_markets', 'landing_company_name', 'is_virtual',
-                     'has_reality_check', 'tnc_status', 'session_duration_limit', 'session_start'];
+        var items = ['currencies', 'allowed_markets', 'landing_company_name', 'is_virtual', 'tnc_status', 'session_duration_limit', 'session_start'];
         items.forEach(function(item) {
             that.set_storage_value(item, '');
         });
@@ -736,8 +729,7 @@ Header.prototype = {
       }
     },
     qualify_for_risk_classification: function() {
-      if (page.client.is_logged_in && !page.client.is_virtual() && page.client.residence !== 'jp' && !$('body').hasClass('BlueTopBack') &&
-          (localStorage.getItem('reality_check.ack') === '1' || !localStorage.getItem('reality_check.interval'))) {
+      if (page.client.is_logged_in && !page.client.is_virtual() && page.client.residence !== 'jp' && !$('body').hasClass('BlueTopBack')) {
               return true;
       }
       return false;
@@ -770,9 +762,8 @@ Header.prototype = {
         if (response.logout !== 1) return;
         page.client.clear_storage_values();
         LocalStore.remove('client.tokens');
-        LocalStore.set('reality_check.ack', 0);
         sessionStorage.removeItem('withdrawal_locked');
-        var cookies = ['login', 'loginid', 'loginid_list', 'email', 'settings', 'reality_check', 'affiliate_token', 'affiliate_tracking', 'residence', 'allowed_markets'];
+        var cookies = ['login', 'loginid', 'loginid_list', 'email', 'settings', 'affiliate_token', 'affiliate_tracking', 'residence', 'allowed_markets'];
         var domains = [
             '.' + document.domain.split('.').slice(-2).join('.'),
             '.' + document.domain,
@@ -980,8 +971,6 @@ Page.prototype = {
         this.contents.on_load();
         if (CommonData.getLoginToken()) {
             ViewBalance.init();
-        } else {
-            LocalStore.set('reality_check.ack', 0);
         }
         if(!Cookies.get('language')) {
             var cookie = new CookieStorage('language');

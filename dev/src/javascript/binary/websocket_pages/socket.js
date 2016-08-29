@@ -135,7 +135,6 @@ function BinarySocketClass() {
                             sessionStorage.removeItem('active_tab');
                             alert(response.error.message);
                         }
-                        LocalStore.set('reality_check.ack', 0);
                         page.client.send_logout_request(isActiveTab);
                     } else if (response.authorize.loginid !== page.client.loginid) {
                         page.client.send_logout_request(true);
@@ -161,7 +160,6 @@ function BinarySocketClass() {
                     page.header.time_counter(response);
                 } else if (type === 'logout') {
                     localStorage.removeItem('jp_test_allowed');
-                    RealityCheckData.clear();
                     page.header.do_logout(response);
                 } else if (type === 'landing_company') {
                     page.contents.topbar_message_visibility(response.landing_company);
@@ -172,13 +170,6 @@ function BinarySocketClass() {
                             company = response.landing_company[key];
                             break;
                         }
-                    }
-                    if (company && company.has_reality_check) {
-                        page.client.response_landing_company(company);
-                        var currentData = TUser.get();
-                        var addedLoginTime = $.extend({logintime: window.time.unix()}, currentData);
-                        TUser.set(addedLoginTime);
-                        RealityCheck.init();
                     }
                 } else if (type === 'get_self_exclusion') {
                     SessionDurationLimit.exclusionResponseHandler(response);
@@ -223,8 +214,6 @@ function BinarySocketClass() {
                             }
                         }
                     }
-                } else if (type === 'reality_check') {
-                    RealityCheck.realityCheckWSHandler(response);
                 } else if (type === 'get_account_status' && response.get_account_status) {
                   if (response.get_account_status.risk_classification === 'high' && page.header.qualify_for_risk_classification()) {
                     send({get_financial_assessment: 1});
@@ -255,7 +244,7 @@ function BinarySocketClass() {
                       localStorage.setItem('risk_classification', 'high');
                       page.header.check_risk_classification();
                     }
-                  } else if ((localStorage.getItem('reality_check.ack') === '1' || !localStorage.getItem('reality_check.interval')) && localStorage.getItem('risk_classification') !== 'high') {
+                  } else if (localStorage.getItem('risk_classification') !== 'high') {
                     localStorage.removeItem('risk_classification');
                     localStorage.removeItem('risk_classification.response');
                     page.client.check_tnc();
