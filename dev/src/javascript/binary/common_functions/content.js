@@ -5,7 +5,14 @@ var Content = (function() {
 
     var populate = function() {
         localize = {
-
+            textMessageRequired: text.localize('This field is required.'),
+            textMessageCountLimit: text.localize('You should enter between [_1] characters.'), // [_1] should be replaced by a range. sample: (6-20)
+            textMessageJustAllowed: text.localize('Only [_1] are allowed.'), // [_1] should be replaced by values including: letters, numbers, space, period, ...
+            textMessageValid: text.localize('Please submit a valid [_1].'), // [_1] should be replaced by values such as email address
+            textMessageMinRequired: text.localize('Minimum of [_1] characters required.'),
+            textMessagePasswordScore: text.localize( 'Password score is: [_1]. Passing score is: 20.'),
+            textShouldNotLessThan: text.localize('Please enter a number greater or equal to [_1].'),
+            textNumberLimit: text.localize('Please enter a number between [_1].')       // [_1] should be a range
         };
     };
 
