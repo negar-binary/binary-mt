@@ -407,6 +407,47 @@ p.no-para-margin {
   display: none !important;
 }
 
+.center-text {
+  text-align: center;
+}
+
+.align-start {
+  text-align: left;
+}
+
+.align-end {
+  text-align: right;
+}
+
+.li-2-boxes-content {
+  padding: 0 15px;
+  min-height: 10em;
+  height: auto;
+}
+
+.li-boxes-content-icon {
+  display: block;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: 50% 0;
+  height: 10em;
+  text-indent: -9999px;
+  outline: none;
+}
+
+.li-boxes-content-extra-height {
+  min-height: 12em;
+}
+
+.disabled {
+  color: #C2C2C2;
+}
+
+.disabled-link {
+  color: #DEDEDE !important;
+  pointer-events: none;
+}
+
 *, *:after, *:before {
   transition: opacity 0.2s, color 0.2s, background 0.2s;
 }
