@@ -28058,7 +28058,6 @@ var BinarySocket = new BinarySocketClass();
 
         TUser.get().balance = balance.balance;
         $("#balance").text(view);
-        PortfolioWS.updateBalance();
     }
 
     return {

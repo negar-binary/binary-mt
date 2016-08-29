@@ -16,7 +16,6 @@ var ViewBalanceUI = (function(){
 
         TUser.get().balance = balance.balance;
         $("#balance").text(view);
-        PortfolioWS.updateBalance();
     }
 
     return {
