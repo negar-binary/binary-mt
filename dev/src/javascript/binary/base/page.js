@@ -362,9 +362,6 @@ Client.prototype = {
     },
     can_upgrade_virtual_to_financial: function(data) {
         return (data.hasOwnProperty('financial_company') && !data.hasOwnProperty('gaming_company') && data.financial_company.shortcode === 'maltainvest');
-    },
-    can_upgrade_virtual_to_japan: function(data) {
-        return (data.hasOwnProperty('financial_company') && !data.hasOwnProperty('gaming_company') && data.financial_company.shortcode === 'japan');
     }
 };
 
@@ -498,7 +495,7 @@ URL.prototype = {
         return params;
     },
     default_redirect_url: function() {
-        return this.url_for(japanese_client() ? 'jptrading' : 'trading');
+        return 'trading';
     },
 };
 
@@ -517,14 +514,14 @@ Menu.prototype = {
         this.hide_main_menu();
 
         var active = this.active_menu_top();
-        var trading = japanese_client() ? $('#main-navigation-jptrading') : $('#main-navigation-trading');
+        var trading = $('#main-navigation-trading');
         if(active) {
             active.addClass('active');
             if(trading.is(active)) {
                 this.show_main_menu();
             }
         } else {
-            var is_mojo_page = /^\/$|\/login|\/home|\/ad|\/open-source-projects|\/partners|\/payment-agent|\/about-us|\/group-information|\/group-history|\/careers|\/contact|\/terms-and-conditions|\/terms-and-conditions-jp|\/responsible-trading|\/us_patents|\/lost_password|\/realws|\/virtualws|\/open-positions|\/job-details|\/user-testing|\/japanws|\/maltainvestws|\/reset_passwordws|\/supported-browsers$/.test(window.location.pathname);
+            var is_mojo_page = /^\/$|\/login|\/home|\/ad|\/open-source-projects|\/partners|\/payment-agent|\/about-us|\/group-information|\/group-history|\/careers|\/contact|\/terms-and-conditions|\/terms-and-conditions-jp|\/responsible-trading|\/us_patents|\/lost_password|\/realws|\/virtualws|\/open-positions|\/job-details|\/user-testing|\/maltainvestws|\/reset_passwordws|\/supported-browsers$/.test(window.location.pathname);
             if(!is_mojo_page) {
                 trading.addClass('active');
                 this.show_main_menu();
@@ -827,7 +824,7 @@ Contents.prototype = {
             }
             if(!page.client.is_virtual()) {
                 // control-class is a fake class, only used to counteract ja-hide class
-                $('.by_client_type.client_real').not((japanese_client() ? ".ja-hide" : ".control-class")).removeClass('invisible');
+                $('.by_client_type.client_real').removeClass('invisible');
                 $('.by_client_type.client_real').show();
 
                 $('#topbar').addClass('primary-color-dark');
@@ -910,8 +907,6 @@ Contents.prototype = {
                     $upgrade_msg.find('> span').removeClass(hiddenClass);
                     if (page.client.can_upgrade_virtual_to_financial(c_config)) {
                         show_upgrade('new_account/maltainvestws', 'Upgrade to a Financial Account');
-                    } else if (page.client.can_upgrade_virtual_to_japan(c_config)) {
-                        show_upgrade('new_account/japanws', 'Upgrade to a Real Account');
                     } else {
                         show_upgrade('new_account/realws', 'Upgrade to a Real Account');
                     }
@@ -1118,14 +1113,6 @@ Page.prototype = {
     check_language: function() {
         if (page.language() === 'ID') {
           change_blog_link('id');
-        }
-        if (japanese_client()) {
-            $('.ja-hide').addClass('invisible');
-            $('.ja-show').attr('style', 'display: inline !important; visibility: visible;');
-            $('.ja-show-block').attr('style', 'display: inline-block !important; visibility: visible;');
-            $('.ja-no-padding').attr('style', 'padding-top: 0; padding-bottom: 0;');
-            $('#regulatory-text').removeClass('gr-9 gr-7-p')
-                                 .addClass('gr-12 gr-12-p');
         }
     },
 };
