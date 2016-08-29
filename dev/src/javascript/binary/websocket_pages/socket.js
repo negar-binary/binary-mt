@@ -256,13 +256,7 @@ function BinarySocketClass() {
             clearTimeouts();
 
             if(!manualClosed && wrongAppId !== getAppId()) {
-                if (TradePage.is_trading_page) {
-                    showPriceOverlay();
-                    showFormOverlay();
-                    TradePage.onLoad();
-                } else {
-                    init(1);
-                }
+                init(1);
             }
             if(typeof events.onclose === 'function'){
                 events.onclose();
