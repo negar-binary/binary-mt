@@ -1,0 +1,92 @@
+msgid "%1 academy"
+msgstr ""
+
+msgid "%1 is the award-winning industry pioneer in online options trading."
+msgstr ""
+
+msgid "&#8220;%1 is one of the oldest and trustworthy partners we ever had. We have worked together for many years.&#8221;"
+msgstr ""
+
+msgid "&#8220;We have used www.binary.com for the last 8 years and highly recommend binary to all our members worldwide&#8221;"
+msgstr ""
+
+msgid "<strong>All durations:</strong> from 10 seconds to 365 days."
+msgstr ""
+
+msgid "<strong>All market conditions:</strong> up/down, touch/no-touch, stays in/goes out."
+msgstr ""
+
+msgid "<strong>All markets:</strong> currencies, stocks, indices, and commodities."
+msgstr ""
+
+msgid "<strong>All payouts:</strong> from $1 to $50,000."
+msgstr ""
+
+msgid "Andrei Asavei <span>Top Binary Options Brokers</span>"
+msgstr ""
+
+msgid "Create Free Account"
+msgstr ""
+
+msgid "Day"
+msgstr ""
+
+msgid "Enter your email"
+msgstr ""
+
+msgid "Free E-books"
+msgstr ""
+
+msgid "Free daily market report"
+msgstr ""
+
+msgid "Free trading charts"
+msgstr ""
+
+msgid "Free webinars"
+msgstr ""
+
+msgid "Hundreds of deposit and withdrawal options."
+msgstr ""
+
+msgid "Improve your trading skills with our free educational & training resources."
+msgstr ""
+
+msgid "Joshua Cavallaro <span> Markets And You Trader.</span>"
+msgstr ""
+
+msgid "Payment methods"
+msgstr ""
+
+msgid "Sharp prices"
+msgstr ""
+
+msgid "Start learning"
+msgstr ""
+
+msgid "The <strong>Premier Platform</strong> for Binary Options Trading"
+msgstr ""
+
+msgid "The easiest way to get started in the financial markets"
+msgstr ""
+
+msgid "Trade <strong>24/7</strong>, even on weekends."
+msgstr ""
+
+msgid "Trade in the world's financial markets in a simple, user-friendly platform."
+msgstr ""
+
+msgid "Trade your way"
+msgstr ""
+
+msgid "What our clients are saying"
+msgstr ""
+
+msgid "Why choose us"
+msgstr ""
+
+msgid "Your funds are safe"
+msgstr ""
+
+msgid "Online Trading platform for binary options on Forex, Indices, Commodities and Smart Indices"
+msgstr ""
