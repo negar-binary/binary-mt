@@ -26810,6 +26810,10 @@ for (var key in texts_json) {
     }
 }
 
+;var CommonData = {
+    getLoginToken: function() { return Cookies.get('login'); }
+};
+
 ;function check_login_hide_signup() {
     if (page.client.is_logged_in) {
         $('#verify-email-form').remove();
