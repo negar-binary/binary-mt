@@ -1219,6 +1219,17 @@ meter#password-meter::-webkit-meter-bar {
     width: 32%;
   }
 }
+/* static pages */
+#balance {
+  float: left;
+  padding-left: 8px;
+  margin-top: 1em;
+}
+
+#client_loginid {
+  min-width: 210px;
+}
+
 /* media queries */
 @media screen and (max-width: 959px) {
   #header ul#menu-top.smaller-font a {
