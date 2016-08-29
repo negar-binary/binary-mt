@@ -249,6 +249,7 @@ fieldset .error-msg {
 
 .hidden {
   display: none;
+  visibility: hidden;
 }
 
 .required_asterisk {
@@ -400,6 +401,10 @@ button.blue-button:hover {
 
 p.no-para-margin {
   margin: 0;
+}
+
+.invisible {
+  display: none !important;
 }
 
 *, *:after, *:before {
