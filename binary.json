@@ -37,6 +37,8 @@
     "src/javascript/binary/base/storage.js",
     "src/javascript/binary/base/utility.js",
     "src/javascript/binary/base.js",
+    "src/javascript/binary/base/__tests__/storage.js",
+    "src/javascript/binary/base/__tests__/utility.js",
     "src/javascript/binary/common_functions/__tests__/currency_to_symbol.js",
     "src/javascript/binary/common_functions/common_data.js",
     "src/javascript/binary/common_functions/content.js",
@@ -48,7 +50,11 @@
     "src/javascript/binary/static_pages/static_pjax.js",
     "src/javascript/binary/validator.js",
     "src/javascript/binary/websocket_pages/socket.js",
+    "src/javascript/binary/websocket_pages/user/account/settings/metatrader.js",
+    "src/javascript/binary/websocket_pages/user/account/settings/metatrader/metatrader.data.js",
+    "src/javascript/binary/websocket_pages/user/account/settings/metatrader/metatrader.ui.js",
     "src/javascript/binary/websocket_pages/user/verify_email.js",
     "src/javascript/binary/websocket_pages/user/viewbalance/viewbalance.init.js",
-    "src/javascript/binary/websocket_pages/user/viewbalance/viewbalance.ui.js"
+    "src/javascript/binary/websocket_pages/user/viewbalance/viewbalance.ui.js",
+    "src/javascript/binary/websocket_pages/websocket_pjax.js"
 ]

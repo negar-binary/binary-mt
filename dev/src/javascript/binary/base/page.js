@@ -629,7 +629,6 @@ Header.prototype = {
         this.show_or_hide_login_form();
         this.register_dynamic_links();
         this.logout_handler();
-        this.check_risk_classification();
         if (!$('body').hasClass('BlueTopBack')) {
           checkClientsCountry();
         }
@@ -718,18 +717,6 @@ Header.prototype = {
             page.client.send_logout_request();
         });
     },
-    check_risk_classification: function() {
-      if (localStorage.getItem('risk_classification.response') === 'high' && localStorage.getItem('risk_classification') === 'high' &&
-          this.qualify_for_risk_classification()) {
-            RiskClassification.renderRiskClassificationPopUp();
-      }
-    },
-    qualify_for_risk_classification: function() {
-      if (page.client.is_logged_in && !page.client.is_virtual() && !$('body').hasClass('BlueTopBack')) {
-              return true;
-      }
-      return false;
-    },
     validate_cookies: function() {
         var loginid_list = Cookies.get('loginid_list');
         var loginid      = Cookies.get('loginid');
@@ -781,8 +768,6 @@ Header.prototype = {
                 Cookies.remove(c, {path: parent_path});
             }
         });
-        localStorage.removeItem('risk_classification');
-        localStorage.removeItem('risk_classification.response');
         page.reload();
     },
 };

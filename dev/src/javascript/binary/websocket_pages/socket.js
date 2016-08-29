@@ -175,11 +175,11 @@ function BinarySocketClass() {
                     }
                     GTM.event_handler(response.get_settings);
                     page.client.set_storage_value('tnc_status', response.get_settings.client_tnc_status || '-');
-                    if (!localStorage.getItem('risk_classification')) page.client.check_tnc();
+                    page.client.check_tnc();
                 } else if (type === 'website_status') {
                     if(!response.hasOwnProperty('error')) {
                         LocalStore.set('website.tnc_version', response.website_status.terms_conditions_version);
-                        if (!localStorage.getItem('risk_classification')) page.client.check_tnc();
+                        page.client.check_tnc();
                         if (response.website_status.hasOwnProperty('clients_country')) {
                             localStorage.setItem('clients_country', response.website_status.clients_country);
                             if (!$('body').hasClass('BlueTopBack')) {
@@ -188,11 +188,6 @@ function BinarySocketClass() {
                         }
                     }
                 } else if (type === 'get_account_status' && response.get_account_status) {
-                  if (response.get_account_status.risk_classification === 'high' && page.header.qualify_for_risk_classification()) {
-                    send({get_financial_assessment: 1});
-                  } else {
-                    localStorage.removeItem('risk_classification');
-                  }
                   var withdrawal_locked, i;
                   for (i = 0; i < response.get_account_status.status.length; i++) {
                     if (response.get_account_status.status[i] === 'withdrawal_locked') {
@@ -200,28 +195,7 @@ function BinarySocketClass() {
                       break;
                     }
                   }
-                  if (response.echo_req.hasOwnProperty('passthrough') && response.echo_req.passthrough.hasOwnProperty('dispatch_to')) {
-                    if (response.echo_req.passthrough.dispatch_to === 'ForwardWS') {
-                        ForwardWS.lock_withdrawal(withdrawal_locked || 'unlocked');
-                    } else if (response.echo_req.passthrough.dispatch_to === 'Cashier') {
-                        Cashier.lock_withdrawal(withdrawal_locked || 'unlocked');
-                    } else if (response.echo_req.passthrough.dispatch_to === 'PaymentAgentWithdrawWS') {
-                      PaymentAgentWithdrawWS.lock_withdrawal(withdrawal_locked || 'unlocked');
-                    }
-                  }
                   sessionStorage.setItem('withdrawal_locked', withdrawal_locked || 'unlocked');
-                  localStorage.setItem('risk_classification.response', response.get_account_status.risk_classification);
-                } else if (type === 'get_financial_assessment' && !response.hasOwnProperty('error')) {
-                  if (Object.keys(response.get_financial_assessment).length === 0) {
-                    if (page.header.qualify_for_risk_classification() && localStorage.getItem('risk_classification.response') === 'high') {
-                      localStorage.setItem('risk_classification', 'high');
-                      page.header.check_risk_classification();
-                    }
-                  } else if (localStorage.getItem('risk_classification') !== 'high') {
-                    localStorage.removeItem('risk_classification');
-                    localStorage.removeItem('risk_classification.response');
-                    page.client.check_tnc();
-                  }
                 }
                 if (response.hasOwnProperty('error')) {
                     if(response.error && response.error.code) {
@@ -233,11 +207,7 @@ function BinarySocketClass() {
                             .on('click', '#ratelimit-refresh-link', function () {
                                 window.location.reload();
                             });
-                      } else if (response.error.code === 'InvalidToken' &&
-                          type !== 'reset_password' &&
-                          type !== 'new_account_virtual' &&
-                          type !== 'paymentagent_withdraw' &&
-                          type !== 'cashier') {
+                      } else if (response.error.code === 'InvalidToken') {
                             page.client.send_logout_request();
                       } else if (response.error.code === 'InvalidAppID') {
                           wrongAppId = getAppId();
