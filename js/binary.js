@@ -27803,7 +27803,6 @@ function BinarySocketClass() {
                     page.header.time_counter(response);
                 } else if (type === 'logout') {
                     localStorage.removeItem('jp_test_allowed');
-                    RealityCheckData.clear();
                     page.header.do_logout(response);
                 } else if (type === 'landing_company') {
                     page.contents.topbar_message_visibility(response.landing_company);
