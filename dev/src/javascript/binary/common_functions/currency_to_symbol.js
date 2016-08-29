@@ -14,7 +14,6 @@ format_money.map = {
     "GBP": "£",
     "AUD": "A$",
     "EUR": "€",
-    "JPY": "¥",
 };
 
 if (typeof module !== 'undefined') {

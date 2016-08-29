@@ -25606,7 +25606,7 @@ Menu.prototype = {
                 this.show_main_menu();
             }
         } else {
-            var is_mojo_page = /^\/$|\/login|\/home|\/ad|\/open-source-projects|\/partners|\/payment-agent|\/about-us|\/group-information|\/group-history|\/careers|\/contact|\/terms-and-conditions|\/terms-and-conditions-jp|\/responsible-trading|\/us_patents|\/lost_password|\/realws|\/virtualws|\/open-positions|\/job-details|\/user-testing|\/maltainvestws|\/reset_passwordws|\/supported-browsers$/.test(window.location.pathname);
+            var is_mojo_page = /^\/$|\/login|\/home|\/ad|\/open-source-projects|\/partners|\/payment-agent|\/about-us|\/group-information|\/group-history|\/careers|\/contact|\/terms-and-conditions|\/responsible-trading|\/us_patents|\/lost_password|\/realws|\/virtualws|\/open-positions|\/job-details|\/user-testing|\/maltainvestws|\/reset_passwordws|\/supported-browsers$/.test(window.location.pathname);
             if(!is_mojo_page) {
                 trading.addClass('active');
                 this.show_main_menu();
@@ -25797,14 +25797,10 @@ Header.prototype = {
         that.server_time_at_response = ((start_timestamp * 1000) + (that.client_time_at_response - pass));
         var update_time = function() {
             window.time = moment(that.server_time_at_response + moment().valueOf() - that.client_time_at_response).utc();
-            var curr = localStorage.getItem('client.currencies');
             var timeStr = window.time.format("YYYY-MM-DD HH:mm") + ' GMT';
-            if(curr === 'JPY'){
-                clock.html(toJapanTimeIfNeeded(timeStr, 1, '', 1));
-            } else {
-                clock.html(timeStr);
-                showLocalTimeOnHover('#gmt-clock');
-            }
+
+            clock.html(timeStr);
+            showLocalTimeOnHover('#gmt-clock');
             window.HeaderTimeUpdateTimeOutRef = setTimeout(update_time, 1000);
         };
         update_time();
@@ -25821,7 +25817,7 @@ Header.prototype = {
       }
     },
     qualify_for_risk_classification: function() {
-      if (page.client.is_logged_in && !page.client.is_virtual() && page.client.residence !== 'jp' && !$('body').hasClass('BlueTopBack')) {
+      if (page.client.is_logged_in && !page.client.is_virtual() && !$('body').hasClass('BlueTopBack')) {
               return true;
       }
       return false;
@@ -25973,11 +25969,6 @@ Contents.prototype = {
             if (page.client.is_virtual()) {
                 var show_upgrade_msg = true;
                 var show_virtual_msg = true;
-                if (localStorage.getItem('jp_test_allowed') === "1") {
-                    hide_upgrade();
-                    show_virtual_msg = false;
-                    show_upgrade_msg = false; // do not show upgrade for user that filled up form
-                }
                 for (var i = 0; i < loginid_array.length; i++) {
                     if (loginid_array[i].real) {
                         hide_upgrade();
@@ -26700,8 +26691,7 @@ function toJapanTimeIfNeeded(gmtTimeStr, showTimeZone, longcode, hideSeconds){
       if (!match) return longcode;
     }
 
-    var curr = localStorage.getItem('client.currencies'),
-        timeStr = gmtTimeStr,
+    var timeStr = gmtTimeStr,
         time;
 
     if(typeof gmtTimeStr === 'number'){
@@ -26714,7 +26704,7 @@ function toJapanTimeIfNeeded(gmtTimeStr, showTimeZone, longcode, hideSeconds){
         return;
     }
 
-    timeStr = time.zone(curr === 'JPY' ? '+09:00' : '+00:00').format((hideSeconds ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD HH:mm:ss' ) + (showTimeZone && showTimeZone !== '' ? curr === 'JPY' ? ' zZ' : ' Z' : ''));
+    timeStr = time.zone('+00:00').format((hideSeconds ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD HH:mm:ss' ) + (showTimeZone && showTimeZone !== '' ? ' Z' : ''));
 
     return (longcode ? longcode.replace(match[0], timeStr) : timeStr);
 }
@@ -27103,7 +27093,6 @@ format_money.map = {
     "GBP": "£",
     "AUD": "A$",
     "EUR": "€",
-    "JPY": "¥",
 };
 
 if (typeof module !== 'undefined') {
@@ -27744,13 +27733,6 @@ function BinarySocketClass() {
                         clearInterval(timeouts[response.echo_req.passthrough.req_number]);
                         delete timeouts[response.echo_req.passthrough.req_number];
                     }
-                    else if (passthrough.hasOwnProperty('dispatch_to')) {
-                        switch (passthrough.dispatch_to) {
-                            case 'ViewPopupWS':       ViewPopupWS.dispatch(response); break;
-                            case 'ViewChartWS':       Highchart.dispatch(response);   break;
-                            case 'ViewTickDisplayWS': WSTickDisplay.dispatch(response); break;
-                        }
-                    }
                 }
                 var type = response.msg_type;
                 if (type === 'authorize') {
@@ -27784,7 +27766,6 @@ function BinarySocketClass() {
                 } else if (type === 'time') {
                     page.header.time_counter(response);
                 } else if (type === 'logout') {
-                    localStorage.removeItem('jp_test_allowed');
                     page.header.do_logout(response);
                 } else if (type === 'landing_company') {
                     page.contents.topbar_message_visibility(response.landing_company);
@@ -27809,25 +27790,6 @@ function BinarySocketClass() {
                     GTM.event_handler(response.get_settings);
                     page.client.set_storage_value('tnc_status', response.get_settings.client_tnc_status || '-');
                     if (!localStorage.getItem('risk_classification')) page.client.check_tnc();
-                    var jpStatus = response.get_settings.jp_account_status;
-                    if (jpStatus) {
-                        switch (jpStatus.status) {
-                            case 'jp_knowledge_test_pending': localStorage.setItem('jp_test_allowed', 1);
-                                break;
-                            case 'jp_knowledge_test_fail':
-                                if (Date.now() >= (jpStatus.next_test_epoch * 1000)) {
-                                    localStorage.setItem('jp_test_allowed', 1);
-                                } else {
-                                    localStorage.setItem('jp_test_allowed', 0);
-                                }
-                                break;
-                            default: localStorage.setItem('jp_test_allowed', 0);
-                        }
-
-                        KnowledgeTest.showKnowledgeTestTopBarIfValid(jpStatus);
-                    } else {
-                        localStorage.removeItem('jp_test_allowed');
-                    }
                 } else if (type === 'website_status') {
                     if(!response.hasOwnProperty('error')) {
                         LocalStore.set('website.tnc_version', response.website_status.terms_conditions_version);

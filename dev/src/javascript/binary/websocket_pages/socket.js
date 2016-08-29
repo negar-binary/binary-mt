@@ -119,13 +119,6 @@ function BinarySocketClass() {
                         clearInterval(timeouts[response.echo_req.passthrough.req_number]);
                         delete timeouts[response.echo_req.passthrough.req_number];
                     }
-                    else if (passthrough.hasOwnProperty('dispatch_to')) {
-                        switch (passthrough.dispatch_to) {
-                            case 'ViewPopupWS':       ViewPopupWS.dispatch(response); break;
-                            case 'ViewChartWS':       Highchart.dispatch(response);   break;
-                            case 'ViewTickDisplayWS': WSTickDisplay.dispatch(response); break;
-                        }
-                    }
                 }
                 var type = response.msg_type;
                 if (type === 'authorize') {
@@ -159,7 +152,6 @@ function BinarySocketClass() {
                 } else if (type === 'time') {
                     page.header.time_counter(response);
                 } else if (type === 'logout') {
-                    localStorage.removeItem('jp_test_allowed');
                     page.header.do_logout(response);
                 } else if (type === 'landing_company') {
                     page.contents.topbar_message_visibility(response.landing_company);
@@ -184,25 +176,6 @@ function BinarySocketClass() {
                     GTM.event_handler(response.get_settings);
                     page.client.set_storage_value('tnc_status', response.get_settings.client_tnc_status || '-');
                     if (!localStorage.getItem('risk_classification')) page.client.check_tnc();
-                    var jpStatus = response.get_settings.jp_account_status;
-                    if (jpStatus) {
-                        switch (jpStatus.status) {
-                            case 'jp_knowledge_test_pending': localStorage.setItem('jp_test_allowed', 1);
-                                break;
-                            case 'jp_knowledge_test_fail':
-                                if (Date.now() >= (jpStatus.next_test_epoch * 1000)) {
-                                    localStorage.setItem('jp_test_allowed', 1);
-                                } else {
-                                    localStorage.setItem('jp_test_allowed', 0);
-                                }
-                                break;
-                            default: localStorage.setItem('jp_test_allowed', 0);
-                        }
-
-                        KnowledgeTest.showKnowledgeTestTopBarIfValid(jpStatus);
-                    } else {
-                        localStorage.removeItem('jp_test_allowed');
-                    }
                 } else if (type === 'website_status') {
                     if(!response.hasOwnProperty('error')) {
                         LocalStore.set('website.tnc_version', response.website_status.terms_conditions_version);

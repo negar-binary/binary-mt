@@ -514,7 +514,7 @@ Menu.prototype = {
                 this.show_main_menu();
             }
         } else {
-            var is_mojo_page = /^\/$|\/login|\/home|\/ad|\/open-source-projects|\/partners|\/payment-agent|\/about-us|\/group-information|\/group-history|\/careers|\/contact|\/terms-and-conditions|\/terms-and-conditions-jp|\/responsible-trading|\/us_patents|\/lost_password|\/realws|\/virtualws|\/open-positions|\/job-details|\/user-testing|\/maltainvestws|\/reset_passwordws|\/supported-browsers$/.test(window.location.pathname);
+            var is_mojo_page = /^\/$|\/login|\/home|\/ad|\/open-source-projects|\/partners|\/payment-agent|\/about-us|\/group-information|\/group-history|\/careers|\/contact|\/terms-and-conditions|\/responsible-trading|\/us_patents|\/lost_password|\/realws|\/virtualws|\/open-positions|\/job-details|\/user-testing|\/maltainvestws|\/reset_passwordws|\/supported-browsers$/.test(window.location.pathname);
             if(!is_mojo_page) {
                 trading.addClass('active');
                 this.show_main_menu();
@@ -705,14 +705,10 @@ Header.prototype = {
         that.server_time_at_response = ((start_timestamp * 1000) + (that.client_time_at_response - pass));
         var update_time = function() {
             window.time = moment(that.server_time_at_response + moment().valueOf() - that.client_time_at_response).utc();
-            var curr = localStorage.getItem('client.currencies');
             var timeStr = window.time.format("YYYY-MM-DD HH:mm") + ' GMT';
-            if(curr === 'JPY'){
-                clock.html(toJapanTimeIfNeeded(timeStr, 1, '', 1));
-            } else {
-                clock.html(timeStr);
-                showLocalTimeOnHover('#gmt-clock');
-            }
+
+            clock.html(timeStr);
+            showLocalTimeOnHover('#gmt-clock');
             window.HeaderTimeUpdateTimeOutRef = setTimeout(update_time, 1000);
         };
         update_time();
@@ -729,7 +725,7 @@ Header.prototype = {
       }
     },
     qualify_for_risk_classification: function() {
-      if (page.client.is_logged_in && !page.client.is_virtual() && page.client.residence !== 'jp' && !$('body').hasClass('BlueTopBack')) {
+      if (page.client.is_logged_in && !page.client.is_virtual() && !$('body').hasClass('BlueTopBack')) {
               return true;
       }
       return false;
@@ -881,11 +877,6 @@ Contents.prototype = {
             if (page.client.is_virtual()) {
                 var show_upgrade_msg = true;
                 var show_virtual_msg = true;
-                if (localStorage.getItem('jp_test_allowed') === "1") {
-                    hide_upgrade();
-                    show_virtual_msg = false;
-                    show_upgrade_msg = false; // do not show upgrade for user that filled up form
-                }
                 for (var i = 0; i < loginid_array.length; i++) {
                     if (loginid_array[i].real) {
                         hide_upgrade();
