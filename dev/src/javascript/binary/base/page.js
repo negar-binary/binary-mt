@@ -504,21 +504,10 @@ Menu.prototype = {
     },
     activate: function() {
         $('#menu-top li').removeClass('active');
-        this.hide_main_menu();
 
         var active = this.active_menu_top();
-        var trading = $('#main-navigation-trading');
         if(active) {
             active.addClass('active');
-            if(trading.is(active)) {
-                this.show_main_menu();
-            }
-        } else {
-            var is_mojo_page = /^\/$|\/home$/.test(window.location.pathname);
-            if(!is_mojo_page) {
-                trading.addClass('active');
-                this.show_main_menu();
-            }
         }
     },
     show_main_menu: function() {
