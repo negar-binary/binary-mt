@@ -952,7 +952,7 @@ var Page = function(config) {
 
 Page.prototype = {
     all_languages: function() {
-        return ['EN', 'AR', 'DE', 'ES', 'FR', 'ID', 'IT', 'PL', 'PT', 'RU', 'VI', 'JA', 'ZH_CN', 'ZH_TW'];
+        return ['EN', 'AR', 'DE', 'ES', 'FR', 'ID', 'IT', 'PL', 'PT', 'RU', 'VI', 'ZH_CN', 'ZH_TW'];
     },
     language_from_url: function() {
         var regex = new RegExp('^(' + this.all_languages().join('|') + ')$', 'i');
@@ -979,7 +979,6 @@ Page.prototype = {
         this.on_change_loginid();
         this.record_affiliate_exposure();
         this.contents.on_load();
-        this.on_click_acc_transfer();
         if (CommonData.getLoginToken()) {
             ViewBalance.init();
         } else {
@@ -1038,17 +1037,6 @@ Page.prototype = {
         localStorage.setItem('active_loginid', loginid);
         $('#client_loginid').removeAttr('disabled');
         page.reload();
-    },
-    on_click_acc_transfer: function() {
-        $('#acc_transfer_submit').on('click', function() {
-            var amount = $('#acc_transfer_amount').val();
-            if (!/^[0-9]+\.?[0-9]{0,2}$/.test(amount) || amount < 0.1) {
-                $('#invalid_amount').removeClass('invisible');
-                $('#invalid_amount').show();
-                return false;
-            }
-            $('#acc_transfer_submit').submit();
-        });
     },
     localize_for: function(language) {
         text = texts[language];
