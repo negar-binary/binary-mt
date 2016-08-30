@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://mt5.binary.com/sitemap.xml
+Sitemap: https://mt.binary.com/sitemap.xml
