@@ -488,7 +488,7 @@ URL.prototype = {
         return params;
     },
     default_redirect_url: function() {
-        return 'home';
+        return 'user/settings/metatrader';
     },
 };
 
