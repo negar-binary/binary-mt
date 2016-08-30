@@ -10,6 +10,7 @@ var Content = (function() {
             textMessageJustAllowed: text.localize('Only [_1] are allowed.'), // [_1] should be replaced by values including: letters, numbers, space, period, ...
             textMessageValid: text.localize('Please submit a valid [_1].'), // [_1] should be replaced by values such as email address
             textMessageMinRequired: text.localize('Minimum of [_1] characters required.'),
+            textFeatureUnavailable: text.localize('Sorry, this feature is not available.'),
             textMessagePasswordScore: text.localize( 'Password score is: [_1]. Passing score is: 20.'),
             textShouldNotLessThan: text.localize('Please enter a number greater or equal to [_1].'),
             textNumberLimit: text.localize('Please enter a number between [_1].')       // [_1] should be a range

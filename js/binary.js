@@ -25303,62 +25303,12 @@ Client.prototype = {
             this.set_storage_value('is_virtual', TUser.get().is_virtual);
         }
 
-        // currencies
-        if(!this.get_storage_value('currencies')) {
-            BinarySocket.send({
-                'payout_currencies': 1,
-                'passthrough': {
-                    'handler': 'page.client',
-                    'origin' : origin || ''
-                }
-            });
-            is_ok = false;
-        }
-
-        // allowed markets
-        if(this.is_logged_in) {
-            if(
-                !this.get_storage_value('is_virtual') &&
-                !this.get_storage_value('allowed_markets') &&
-                Cookies.get('residence')
-            ) {
-                $('#topMenuStartBetting').addClass('invisible');
-                BinarySocket.send({
-                    'landing_company': Cookies.get('residence'),
-                    'passthrough': {
-                        'handler': 'page.client',
-                        'origin' : origin || ''
-                    }
-                });
-                is_ok = false;
-            }
-        }
-
         // website TNC version
         if(!LocalStore.get('website.tnc_version')) {
             BinarySocket.send({'website_status': 1});
         }
 
         return is_ok;
-    },
-    response_payout_currencies: function(response) {
-        if (!response.hasOwnProperty('error')) {
-            this.set_storage_value('currencies', response.payout_currencies.join(','));
-            if(response.echo_req.hasOwnProperty('passthrough') && response.echo_req.passthrough.origin === 'attributes.restore.currency') {
-                BetForm.attributes.restore.currency();
-            }
-        }
-    },
-    response_landing_company: function(response) {
-        if (!response.hasOwnProperty('error')) {
-            var allowed_markets = response.legal_allowed_markets;
-            var company = response.name;
-
-            this.set_storage_value('allowed_markets', allowed_markets.length === 0 ? '' : allowed_markets.join(','));
-            this.set_storage_value('landing_company_name', company);
-
-            page.header.menu.register_dynamic_links();
-        }
     },
     response_authorize: function(response) {
         page.client.set_storage_value('session_start', parseInt(moment().valueOf() / 1000));
@@ -25383,7 +25333,7 @@ Client.prototype = {
     },
     clear_storage_values: function() {
         var that  = this;
-        var items = ['currencies', 'allowed_markets', 'landing_company_name', 'is_virtual', 'tnc_status', 'session_duration_limit', 'session_start'];
+        var items = ['is_virtual', 'tnc_status', 'session_duration_limit', 'session_start'];
         items.forEach(function(item) {
             that.set_storage_value(item, '');
         });
@@ -26076,7 +26026,6 @@ Page.prototype = {
 
         // cleaning the previous values
         page.client.clear_storage_values();
-        sessionStorage.setItem('active_tab', '1');
         sessionStorage.removeItem('withdrawal_locked');
         // set cookies: loginid, login
         page.client.set_cookie('loginid', loginid);
@@ -27000,6 +26949,7 @@ for (var key in texts_json) {
             textMessageJustAllowed: text.localize('Only [_1] are allowed.'), // [_1] should be replaced by values including: letters, numbers, space, period, ...
             textMessageValid: text.localize('Please submit a valid [_1].'), // [_1] should be replaced by values such as email address
             textMessageMinRequired: text.localize('Minimum of [_1] characters required.'),
+            textFeatureUnavailable: text.localize('Sorry, this feature is not available.'),
             textMessagePasswordScore: text.localize( 'Password score is: [_1]. Passing score is: 20.'),
             textShouldNotLessThan: text.localize('Please enter a number greater or equal to [_1].'),
             textNumberLimit: text.localize('Please enter a number between [_1].')       // [_1] should be a range
@@ -27715,12 +27665,10 @@ function BinarySocketClass() {
                 var type = response.msg_type;
                 if (type === 'authorize') {
                     if(response.hasOwnProperty('error')) {
-                        var isActiveTab = sessionStorage.getItem('active_tab') === '1';
-                        if(response.error.code === 'SelfExclusion' && isActiveTab) {
-                            sessionStorage.removeItem('active_tab');
+                        if(response.error.code === 'SelfExclusion') {
                             alert(response.error.message);
                         }
-                        page.client.send_logout_request(isActiveTab);
+                        page.client.send_logout_request();
                     } else if (response.authorize.loginid !== page.client.loginid) {
                         page.client.send_logout_request(true);
                     } else {
@@ -27731,7 +27679,6 @@ function BinarySocketClass() {
                         if(!Login.is_login_pages()) {
                             page.client.response_authorize(response);
                             send({balance:1, subscribe: 1});
-                            if (Cookies.get('residence')) send({landing_company: Cookies.get('residence')});
                             send({get_settings: 1});
                             if(!page.client.is_virtual()) {
                                 send({get_self_exclusion: 1});
@@ -27745,25 +27692,12 @@ function BinarySocketClass() {
                     page.header.time_counter(response);
                 } else if (type === 'logout') {
                     page.header.do_logout(response);
-                } else if (type === 'landing_company') {
-                    page.contents.topbar_message_visibility(response.landing_company);
-                    var company;
-                    if (response.hasOwnProperty('error')) return;
-                    for (var key in response.landing_company) {
-                        if (TUser.get().landing_company_name === response.landing_company[key].shortcode) {
-                            company = response.landing_company[key];
-                            break;
-                        }
-                    }
                 } else if (type === 'get_self_exclusion') {
                     SessionDurationLimit.exclusionResponseHandler(response);
-                } else if (type === 'payout_currencies' && response.hasOwnProperty('echo_req') && response.echo_req.hasOwnProperty('passthrough') && response.echo_req.passthrough.handler === 'page.client') {
-                    page.client.response_payout_currencies(response);
                 } else if (type === 'get_settings' && response.get_settings) {
                     if (!Cookies.get('residence') && response.get_settings.country_code) {
                       page.client.set_cookie('residence', response.get_settings.country_code);
                       page.client.residence = response.get_settings.country_code;
-                      send({landing_company: Cookies.get('residence')});
                     }
                     GTM.event_handler(response.get_settings);
                     page.client.set_storage_value('tnc_status', response.get_settings.client_tnc_status || '-');

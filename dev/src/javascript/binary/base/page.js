@@ -211,62 +211,12 @@ Client.prototype = {
             this.set_storage_value('is_virtual', TUser.get().is_virtual);
         }
 
-        // currencies
-        if(!this.get_storage_value('currencies')) {
-            BinarySocket.send({
-                'payout_currencies': 1,
-                'passthrough': {
-                    'handler': 'page.client',
-                    'origin' : origin || ''
-                }
-            });
-            is_ok = false;
-        }
-
-        // allowed markets
-        if(this.is_logged_in) {
-            if(
-                !this.get_storage_value('is_virtual') &&
-                !this.get_storage_value('allowed_markets') &&
-                Cookies.get('residence')
-            ) {
-                $('#topMenuStartBetting').addClass('invisible');
-                BinarySocket.send({
-                    'landing_company': Cookies.get('residence'),
-                    'passthrough': {
-                        'handler': 'page.client',
-                        'origin' : origin || ''
-                    }
-                });
-                is_ok = false;
-            }
-        }
-
         // website TNC version
         if(!LocalStore.get('website.tnc_version')) {
             BinarySocket.send({'website_status': 1});
         }
 
         return is_ok;
-    },
-    response_payout_currencies: function(response) {
-        if (!response.hasOwnProperty('error')) {
-            this.set_storage_value('currencies', response.payout_currencies.join(','));
-            if(response.echo_req.hasOwnProperty('passthrough') && response.echo_req.passthrough.origin === 'attributes.restore.currency') {
-                BetForm.attributes.restore.currency();
-            }
-        }
-    },
-    response_landing_company: function(response) {
-        if (!response.hasOwnProperty('error')) {
-            var allowed_markets = response.legal_allowed_markets;
-            var company = response.name;
-
-            this.set_storage_value('allowed_markets', allowed_markets.length === 0 ? '' : allowed_markets.join(','));
-            this.set_storage_value('landing_company_name', company);
-
-            page.header.menu.register_dynamic_links();
-        }
     },
     response_authorize: function(response) {
         page.client.set_storage_value('session_start', parseInt(moment().valueOf() / 1000));
@@ -291,7 +241,7 @@ Client.prototype = {
     },
     clear_storage_values: function() {
         var that  = this;
-        var items = ['currencies', 'allowed_markets', 'landing_company_name', 'is_virtual', 'tnc_status', 'session_duration_limit', 'session_start'];
+        var items = ['is_virtual', 'tnc_status', 'session_duration_limit', 'session_start'];
         items.forEach(function(item) {
             that.set_storage_value(item, '');
         });
@@ -984,7 +934,6 @@ Page.prototype = {
 
         // cleaning the previous values
         page.client.clear_storage_values();
-        sessionStorage.setItem('active_tab', '1');
         sessionStorage.removeItem('withdrawal_locked');
         // set cookies: loginid, login
         page.client.set_cookie('loginid', loginid);
