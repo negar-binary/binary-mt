@@ -179,7 +179,6 @@ onLoad.queue(function () {
 onLoad.queue(function () {
     attach_date_picker('.has-date-picker');
     attach_time_picker('.has-time-picker');
-    attach_tabs('.has-tabs');
 });
 
 // LocalStorage can be used as a means of communication among

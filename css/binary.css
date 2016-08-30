@@ -807,11 +807,11 @@ p.no-para-margin {
   font-size: 90%;
   background: transparent;
 }
-#content ul.tm-ul li.active, #content ul.tm-ul li.ui-tabs-active {
+#content ul.tm-ul li.active {
   background: #2a3052;
   color: #fff;
 }
-#content ul.tm-ul li.active a, #content ul.tm-ul li.ui-tabs-active a {
+#content ul.tm-ul li.active a {
   background: none;
   color: #fff;
   font-weight: normal;
@@ -819,7 +819,7 @@ p.no-para-margin {
   padding: 0;
   outline: none;
 }
-#content ul.tm-ul li.active span.a-active, #content ul.tm-ul li.ui-tabs-active span.a-active {
+#content ul.tm-ul li.active span.a-active {
   line-height: 2;
 }
 #content ul.tm-ul ul.tm-ul-2 {
@@ -841,82 +841,6 @@ p.no-para-margin {
 }
 #content ul.tm-ul ul.tm-ul-2 li a:hover {
   text-decoration: underline;
-}
-
-.has-tabs {
-  border: none;
-  border-radius: 0;
-  margin: 0;
-  padding: 0;
-  font: inherit !important;
-  /* fix jquery UI tabs to look more like our tabs */
-}
-.has-tabs ul.ui-tabs-nav {
-  border: none;
-  border-radius: 0;
-  padding: 0;
-  margin-left: 0;
-  background: none;
-  border-bottom: 1px solid #44484C;
-  font: inherit !important;
-}
-.has-tabs ul.ui-tabs-nav li {
-  border: none;
-  list-style-image: none;
-  background: #F2F2F2;
-  border-radius: 4px 4px 0 0;
-  margin: 0 6px 0 0;
-  padding: 0 10px;
-}
-.has-tabs ul.ui-tabs-nav li a, .has-tabs ul.ui-tabs-nav li a:visited {
-  padding: 0;
-  font-weight: normal;
-  text-decoration: none;
-  color: #000;
-  font-size: 90%;
-  background: transparent;
-}
-.has-tabs ul.ui-tabs-nav li.active, .has-tabs ul.ui-tabs-nav li.ui-tabs-active {
-  background: #2a3052;
-  color: #fff;
-}
-.has-tabs ul.ui-tabs-nav li.active a, .has-tabs ul.ui-tabs-nav li.ui-tabs-active a {
-  background: none;
-  color: #fff;
-  font-weight: normal;
-  text-decoration: none;
-  padding: 0;
-  outline: none;
-}
-.has-tabs ul.ui-tabs-nav li.active span.a-active, .has-tabs ul.ui-tabs-nav li.ui-tabs-active span.a-active {
-  line-height: 2;
-}
-.has-tabs ul.ui-tabs-nav ul.tm-ul-2 {
-  list-style-type: none;
-  margin: 0;
-}
-.has-tabs ul.ui-tabs-nav ul.tm-ul-2 li {
-  background: none;
-}
-.has-tabs ul.ui-tabs-nav ul.tm-ul-2 li a {
-  color: #000;
-  padding-top: 0;
-  font-weight: normal;
-  text-decoration: none;
-  width: auto;
-}
-.has-tabs ul.ui-tabs-nav ul.tm-ul-2 li a.a-active {
-  color: #e98024;
-}
-.has-tabs ul.ui-tabs-nav ul.tm-ul-2 li a:hover {
-  text-decoration: underline;
-}
-.has-tabs ul.ui-tabs-nav li {
-  margin-right: 6px !important;
-  float: left;
-}
-.has-tabs .ui-tabs-panel {
-  padding: 0 !important;
 }
 
 #content .page-section {

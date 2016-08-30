@@ -167,32 +167,6 @@ function attach_time_picker(element, conf) {
     return target.timepicker(opts);
 }
 
-/**
- * attaches tabs to the specified element selector
- *
- * @param element any jquery selector or DOM/jQuery object
- */
-function attach_tabs(element) {
-    var targets = $(element);
-    targets.each(function () {
-        var jqel = $(this);
-        var conf = {};
-        var active = 0;
-        try {
-            active = find_active_jqtab(jqel);
-        } catch (e) {
-            console.log(e);
-            console.log(jqel);
-        }
-        if (active) {
-            conf['active'] = active;
-            $('li.active', jqel).removeClass('active');
-        }
-        jqel.tabs(conf);
-    });
-    return targets;
-}
-
 function showLocalTimeOnHover(s) {
     var selector = s || '.date';
 

@@ -530,7 +530,6 @@ Contents.prototype = {
     on_load: function() {
         this.activate_by_client_type();
         this.update_content_class();
-        this.init_draggable();
     },
     on_unload: function() {
         if ($('.unbind_later').length > 0) {
@@ -549,25 +548,12 @@ Contents.prototype = {
 
                 $('#topbar').addClass('primary-color-dark');
                 $('#topbar').removeClass('secondary-bg-color');
-
-                if (!/^CR/.test(this.client.loginid)) {
-                    $('#payment-agent-section').addClass('invisible');
-                    $('#payment-agent-section').hide();
-                }
-
-                if (!/^MF|MLT/.test(this.client.loginid)) {
-                    $('#account-transfer-section').addClass('invisible');
-                    $('#account-transfer-section').hide();
-                }
             } else {
                 $('.by_client_type.client_virtual').removeClass('invisible');
                 $('.by_client_type.client_virtual').show();
 
                 $('#topbar').addClass('secondary-bg-color');
                 $('#topbar').removeClass('primary-color-dark');
-
-                $('#account-transfer-section').addClass('invisible');
-                $('#account-transfer-section').hide();
             }
         } else {
             $('#btn_login').unbind('click').click(function(e){e.preventDefault(); Login.redirect_to_login();});
@@ -577,18 +563,12 @@ Contents.prototype = {
 
             $('#topbar').removeClass('secondary-bg-color');
             $('#topbar').addClass('primary-color-dark');
-
-            $('#account-transfer-section').addClass('invisible');
-            $('#account-transfer-section').hide();
         }
     },
     update_content_class: function() {
         //This is required for our css to work.
         $('#content').removeClass();
         $('#content').addClass($('#content_class').html());
-    },
-    init_draggable: function() {
-        $('.draggable').draggable();
     },
     topbar_message_visibility: function(c_config) {
         if(this.client.is_logged_in) {
