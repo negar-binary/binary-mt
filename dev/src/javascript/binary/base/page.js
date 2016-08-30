@@ -320,12 +320,6 @@ Menu.prototype = {
         this.reset();
     },
     activate: function() {
-        $('#menu-top li').removeClass('active');
-
-        var active = this.active_menu_top();
-        if(active) {
-            active.addClass('active');
-        }
         if (page.client.is_logged_in) {
             this.show_main_menu();
         }
@@ -364,17 +358,6 @@ Menu.prototype = {
                 active_item.addClass('hover');
         });
     },
-    active_menu_top: function() {
-        var active;
-        var path = window.location.pathname;
-        $('#menu-top li a').each(function() {
-            if(path.indexOf(this.pathname.replace(/\.html/i, '')) >= 0) {
-                active = $(this).closest('li');
-            }
-        });
-
-        return active;
-    },
     active_main_menu: function() {
         var page_url = this.page_url;
         var item;
@@ -388,19 +371,6 @@ Menu.prototype = {
         });
 
         return { item: item };
-    },
-    register_dynamic_links: function() {
-        var stored_market = page.url.param('market') || LocalStore.get('bet_page.market') || 'forex';
-        var allowed_markets = page.client.get_storage_value('allowed_markets');
-        if(!allowed_markets && page.client.is_logged_in && !TUser.get().is_virtual) {
-            return;
-        }
-
-        var markets_array = allowed_markets ? allowed_markets.split(',') : [];
-        if(!TUser.get().is_virtual && markets_array.indexOf(stored_market) < 0) {
-            stored_market = markets_array[0];
-            LocalStore.set('bet_page.market', stored_market);
-        }
     }
 };
 
@@ -415,12 +385,7 @@ Header.prototype = {
         this.show_or_hide_login_form();
         this.register_dynamic_links();
         this.logout_handler();
-        if (!$('body').hasClass('BlueTopBack')) {
-          checkClientsCountry();
-        }
-        if(page.client.is_logged_in) {
-            $('ul#menu-top').addClass('smaller-font');
-        }
+        checkClientsCountry();
     },
     on_unload: function() {
         this.menu.reset();
@@ -459,8 +424,6 @@ Header.prototype = {
             event.preventDefault();
             load_with_pjax(logged_in_url);
         }).addClass('unbind_later');
-
-        this.menu.register_dynamic_links();
     },
     start_clock_ws: function() {
         function getTime() {
