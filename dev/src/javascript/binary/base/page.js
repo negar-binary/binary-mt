@@ -899,7 +899,6 @@ Page.prototype = {
             sessionStorage.removeItem('showLoginPage');
             Login.redirect_to_login();
         }
-        this.check_language();
         TrafficSource.setData();
     },
     on_unload: function() {
@@ -1003,10 +1002,5 @@ Page.prototype = {
         };
         xhttp.open('GET', page.url.url_for_static() + 'version?' + Math.random().toString(36).slice(2), true);
         xhttp.send();
-    },
-    check_language: function() {
-        if (page.language() === 'ID') {
-          change_blog_link('id');
-        }
     },
 };

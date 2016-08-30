@@ -157,8 +157,6 @@ onLoad.queue(function () {
         }
     );
 
-    MenuContent.init($('.content-tab-container').find('.tm-ul'));
-
     add_click_effect_to_button();
     make_mobile_menu();
 

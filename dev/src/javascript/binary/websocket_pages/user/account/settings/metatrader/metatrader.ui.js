@@ -89,6 +89,13 @@ var MetaTraderUI = (function() {
                 }
 
                 if($('#accordion').hasClass(hiddenClass)) {
+                    $(function() {
+                        $( "#accordion" ).accordion({
+                          heightStyle: "content",
+                          collapsible: true,
+                          active: false
+                        });
+                    });
                     $('#accordion').removeClass(hiddenClass).accordion({
                         heightStyle : 'content',
                         collapsible : true,

@@ -29,7 +29,7 @@ var LoggedInHandler = (function() {
         // redirect back
         var set_default = true;
         if(redirect_url) {
-            var do_not_redirect = ['reset_passwordws', 'lost_passwordws', 'change_passwordws', 'home'];
+            var do_not_redirect = ['home'];
             var reg = new RegExp(do_not_redirect.join('|'), 'i');
             if(!reg.test(redirect_url) && page.url.url_for('') !== redirect_url) {
                 set_default = false;
