@@ -4,7 +4,6 @@
     "src/javascript/lib/eventsource.js",
     "src/javascript/lib/jQuery.XDomainRequest.js",
     "src/javascript/lib/jquery-ui.js",
-    "src/javascript/lib/jquery.sparkline.js",
     "src/javascript/lib/js-cookie.js",
     "src/javascript/lib/loadCSS.js",
     "src/javascript/lib/loadJS.js",
