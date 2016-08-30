@@ -24576,7 +24576,6 @@ Header.prototype = {
         if (response.logout !== 1) return;
         page.client.clear_storage_values();
         LocalStore.remove('client.tokens');
-        sessionStorage.removeItem('withdrawal_locked');
         var cookies = ['login', 'loginid', 'loginid_list', 'email', 'settings', 'residence'];
         var domains = [
             '.' + document.domain.split('.').slice(-2).join('.'),
@@ -24717,7 +24716,6 @@ Page.prototype = {
             sessionStorage.removeItem('showLoginPage');
             Login.redirect_to_login();
         }
-        TrafficSource.setData();
     },
     on_unload: function() {
         this.header.on_unload();
@@ -24751,7 +24749,6 @@ Page.prototype = {
 
         // cleaning the previous values
         page.client.clear_storage_values();
-        sessionStorage.removeItem('withdrawal_locked');
         // set cookies: loginid, login
         page.client.set_cookie('loginid', loginid);
         page.client.set_cookie('login'  , token);
@@ -24923,9 +24920,7 @@ var pjax_config = function() {
 
 var init_pjax = function () {
     var document_location = document.URL;
-    if(!$('body').hasClass('BlueTopBack')) { //No Pjax for BO.
-        pjax.connect(pjax_config());
-    }
+    pjax.connect(pjax_config());
 };
 
 var load_with_pjax = function(url) {
@@ -25100,163 +25095,6 @@ function showLoadingImage(container)
     container.empty().append('<div id="std_loading_img"><p>'+text.localize('loading...')+'</p><img src="'+image_link['hourglass']+'" /></div>');
 }
 
-/**
- * Returns the highest z-index in the page.
- * Accepts a jquery style selector to only check those elements,
- * uses all container tags by default
- * If no element found, returns null.
- *
- * @param selector: a jquery style selector for target elements
- * @return int|null
- */
-function get_highest_zindex(selector) {
-    if (!selector) {
-        selector = 'div,p,area,nav,section,header,canvas,aside,span';
-    }
-    var all = [];
-    var _store_zindex = function () {
-        if ($(this).is(':visible')) {
-            var z = $(this).css("z-index");
-            if ( !isNaN(z) ) {
-                all.push(z);
-            }
-        }
-    };
-    $(selector).each(_store_zindex);
-
-    return all.length ? Math.max.apply(Math, all) : null;
-}
-
-/**
- * Gets a DOM or jQuery element and reads its data attributes
- * and return an object of data stored in element attributes.
- * This is used where we store some data as element attributes.
- * Excludes commont HTML attributes from the element.
- *
- * @param element: DOM|jQuery element
- * @return object
- */
-function element_data_attrs(element) {
-    if (element && element instanceof jQuery) {
-        element = element.get().pop();
-    }
-    if (!element || !element.attributes) {
-        console.log(element);
-        throw new Error("Can not get data attributes from none element parameter");
-    }
-    var data = {};
-    var attrs = element.attributes;
-    if (attrs.length) {
-        var attr_blacklist = ['id', 'class', 'name', 'style', 'href', 'src', 'title', 'onclick'];
-        for (var i = 0; i < attrs.length; i++) {
-            var attr = attrs[i];
-            if (attr_blacklist.indexOf(attr.name.toLowerCase()) > -1) continue;
-            data[attr.name] = attr.value;
-        }
-    }
-    return data;
-}
-
-/**
- * Converts a snake_cased string to a camelCased string.
- * The first character case not changed unless requested.
- *
- * @param snake: snake_cased string
- * @param lower_case_first_char: boolean to force the first char to be lower cased
- * @param chars: string of chars to be considered a separator (default is _ and -)
- */
-function snake_case_to_camel_case(snake, lower_case_first_char, chars) {
-    chars = chars || '_-';
-    var _upper2ndchar = function (m) { return m[1].toUpperCase(); };
-    var regex = new RegExp('[' + chars + ']([a-zA-Z])', 'g');
-    var camel = snake.replace(regex, _upper2ndchar);
-    camel.replace('_', '');
-    if (lower_case_first_char) {
-        camel = camel[0].toLowerCase() + camel.substr(1);
-    }
-    return camel;
-}
-
-/**
- * attaches a datepicker to the specified element
- * This is a thin wrapper for datepicker, helps to keep a unique site-wide
- * default configurations for the datepicker.
- *
- * @param element any jquery selector or DOM/jQuery object to attach the datepicker to
- * @param config custom configurations for the datepicker
- */
-function attach_date_picker(element, conf) {
-    var k,
-        target = $(element);
-    if (!target || !target.length) return false;
-    var today = new Date();
-    var next_year = new Date();
-    next_year.setDate(today.getDate() + 365);
-    var options = {
-        dateFormat: 'yy-mm-dd',
-        maxDate: next_year,
-    };
-    for (k in conf) if (conf.hasOwnProperty(k)) {
-        options[k] = conf[k];
-    }
-    return target.datepicker(options);
-}
-
-/**
- * attaches a timepicker to the specified element.
- * This is a thin wrapper for timepicker, helps to keep a unique site-wide
- * default configurations for the timepicker.
- *
- * @param element any jquery selector or DOM/jQuery object to attach the timepicker to
- * @param config custom configurations for the timepicker
- */
-function attach_time_picker(element, conf) {
-    var attr, k, target = $(element);
-    if (!target || !target.length) return false;
-    var opts = {
-        timeSeparator: ':',
-        showLeadingZero: true,
-        howMinutesLeadingZero: true,
-        hourText: text.localize("Hour"),
-        minuteText: text.localize("Minute"),
-        minTime: {},
-        maxTime: {},
-    };
-    var data_attrs = element_data_attrs(target);
-    var regex = /^time\:(.+)/;
-    for (attr in data_attrs) if (data_attrs.hasOwnProperty(attr)) {
-        var matched = attr.match(regex);
-        if (matched) {
-            var data = data_attrs[attr];
-            var opt_name = matched[1].trim();
-            if (data == 'true') {
-                data = true;
-            } else if (data == 'false') {
-                data = false;
-            }
-            opt_name = snake_case_to_camel_case(opt_name, true).toLowerCase();
-            switch (opt_name) {
-                case 'mintimehour':
-                    opts.minTime.hour = data;
-                    break;
-                case 'mintimeminute':
-                    opts.minTime.minute = data;
-                    break;
-                case 'maxtimehour':
-                    opts.maxTime.hour = data;
-                    break;
-                case 'maxtimeminute':
-                    opts.maxTime.minute = data;
-                    break;
-            }
-        }
-    }
-    for (k in conf) if (conf.hasOwnProperty(k)) {
-        opts[k] = conf[k];
-    }
-    return target.timepicker(opts);
-}
-
 function showLocalTimeOnHover(s) {
     var selector = s || '.date';
 
@@ -25272,31 +25110,6 @@ function showLocalTimeOnHover(s) {
 
         $(ele).attr('data-balloon', localTimeStr);
     });
-}
-
-function toJapanTimeIfNeeded(gmtTimeStr, showTimeZone, longcode, hideSeconds){
-    var match;
-    if (longcode && longcode !== '') {
-      match = longcode.match(/(\d{4}-\d{2}-\d{2})\s?(\d{2}:\d{2}:\d{2})?/);
-      if (!match) return longcode;
-    }
-
-    var timeStr = gmtTimeStr,
-        time;
-
-    if(typeof gmtTimeStr === 'number'){
-        time = moment.utc(gmtTimeStr*1000);
-    } else {
-        time = moment.utc(gmtTimeStr, 'YYYY-MM-DD HH:mm:ss');
-    }
-
-    if (!time.isValid()) {
-        return;
-    }
-
-    timeStr = time.zone('+00:00').format((hideSeconds ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD HH:mm:ss' ) + (showTimeZone && showTimeZone !== '' ? ' Z' : ''));
-
-    return (longcode ? longcode.replace(match[0], timeStr) : timeStr);
 }
 
 function template(string, content) {
@@ -25323,7 +25136,6 @@ function parseLoginIDList(string) {
 //used temporarily for mocha test
 if (typeof module !== 'undefined') {
     module.exports = {
-        toJapanTimeIfNeeded: toJapanTimeIfNeeded,
         template: template,
         parseLoginIDList: parseLoginIDList,
     };
@@ -25372,17 +25184,6 @@ onLoad.queue(function () {
 onUnload.queue(function () {
     page.on_unload();
 });
-
-//////////////////////////////////////////////////////////////
-//Purpose: To solve cross domain logged out server problem.
-//Return: Hostname for this page
-//////////////////////////////////////////////////////////////
-function changeUrlToSameDomain(url) {
-    var re = new RegExp('^(http|https):\/\/[.a-zA-Z0-9-]+/');
-    var server_name = window.location.protocol + '//' + window.location.hostname;
-    var same_domain_url = url.replace(re, server_name + '/');
-    return same_domain_url;
-}
 
 function formEffects() {
     var select_focus_event = function () {
@@ -25507,11 +25308,6 @@ onLoad.queue(function () {
 
 });
 
-onLoad.queue(function () {
-    attach_date_picker('.has-date-picker');
-    attach_time_picker('.has-time-picker');
-});
-
 // LocalStorage can be used as a means of communication among
 // different windows. The problem that is solved here is what
 // happens if the user logs out or switches loginid in one
@@ -25523,7 +25319,6 @@ onLoad.queue(function () {
 // jQuery's ready function works always.
 
 $(document).ready(function () {
-    if ($('body').hasClass('BlueTopBack')) return; // exclude BO
     // Cookies is not always available.
     // So, fall back to a more basic solution.
     var match = document.cookie.match(/\bloginid=(\w+)/);
@@ -25789,361 +25584,6 @@ function addComma(num){
 }());
 
 ;/*
- * Handles utm parameters/referrer to use on signup
- * 
- * Priorities:
- * 1. Cookie having utm data (utm_source, utm_medium, utm_campaign) [Expires in 3 months]
- * 2. Query string utm parameters
- * 3. document.referrer
- *
- */
-
-var TrafficSource = (function(){
-    'use strict';
-
-    var cookie,
-        expire_months = 3;
-
-    var initCookie = function() {
-        if (!cookie) {
-            cookie = new CookieStorage('utm_data');
-            cookie.read();
-            // expiration date is used when writing cookie
-            var now = new Date();
-            cookie.expires = now.setMonth(now.getMonth() + expire_months);
-        }
-    };
-
-    var getData = function() {
-        initCookie();
-        var data = cookie.value;
-        Object.keys(data).map(function(key) {
-            data[key] = (data[key] || '').replace(/[^a-zA-Z0-9\s\-\.\_]/gi, '').substring(0, 100);
-        });
-        return data;
-    };
-
-    var getSource = function(utm_data) {
-        if (!utm_data) utm_data = getData();
-        return utm_data.utm_source || utm_data.referrer || 'direct'; // in order of precedence
-    };
-
-    var setData = function() {
-        if (page.client.is_logged_in) return clearData();
-
-        var current_values = getData(),
-            params = page.url.params_hash(),
-            param_keys = ['utm_source', 'utm_medium', 'utm_campaign'];
-
-        if (params.utm_source) { // url params can be stored only if utm_source is available
-            param_keys.map(function(key) {
-                if (params[key] && !current_values[key]) {
-                    cookie.set(key, params[key]);
-                }
-            });
-        }
-
-        var doc_ref  = document.referrer,
-            referrer = localStorage.getItem('index_referrer') || doc_ref;
-        localStorage.removeItem('index_referrer');
-        if(doc_ref && !(new RegExp(window.location.hostname, 'i')).test(doc_ref)) {
-            referrer = doc_ref;
-        }
-        if(referrer && !current_values.referrer && !params.utm_source && !current_values.utm_source) {
-            cookie.set('referrer', (new URL(referrer)).location.hostname);
-        }
-    };
-
-    var clearData = function() {
-        initCookie();
-        cookie.remove();
-    };
-
-    return {
-        getData  : getData,
-        setData  : setData,
-        clearData: clearData,
-        getSource: getSource,
-    };
-})();
-
-;var ValidateV2 = (function() {
-    function err() {
-        return Content.errorMessage.apply(Content, arguments);
-    }
-
-    // We don't have access to the localised messages at the init-time
-    // of this module. Solution: delay execution with 'unwrappables'.
-    // Objects that have an `.unwrap` method.
-    //
-    // unwrap({unwrap: () => 1}) == 1
-    // unwrap(1) == 1
-    //
-    function unwrap(a) {
-        return a.unwrap ? a.unwrap() : a;
-    }
-
-    function local(value) {
-        return {unwrap: function() { return text.localize(value); }};
-    }
-
-    function localKey(value) {
-        return {unwrap: function() { return Content.localize()[value]; }};
-    }
-
-    function msg() {
-        var args = [].slice.call(arguments);
-        return {unwrap: function() {
-            return err.apply(null, args.map(unwrap));
-        }};
-    }
-
-    function check(fn, err) {
-        return function(value) {
-            return fn(value) ?
-                dv.ok(value) :
-                dv.fail(unwrap(err));
-        };
-    }
-
-    // TEST THESE
-    function validEmail(email) {
-        var regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
-        return regex.test(email);
-    }
-
-    function notEmpty(value) {
-        return value.length > 0;
-    }
-
-    function validPasswordLength(value) {
-        return value.length >= 6 && value.length <= 25;
-    }
-
-    function validPasswordChars(value) {
-        return /[0-9]+/.test(value) &&
-            /[A-Z]+/.test(value) &&
-            /[a-z]+/.test(value);
-    }
-
-    function noSymbolsInPassword(value) {
-        return !/^[!-~]+$/.test(password);
-    }
-
-    function validToken(value) {
-        return value.length === 48;
-    }
-
-    // CAN BE USED IN UI
-    var required = check(notEmpty, msg('req'));
-    var email    = check(validEmail, msg('valid', local('email address')));
-    var token    = check(validToken, msg('valid', local('verification token')));
-    var password = function(value) {
-        return dv.first(value, [
-            password.len,
-            password.allowed,
-            password.symbols,
-        ]);
-    };
-
-    password.len     = check(validPasswordLength, msg('range', '6-25'));
-    password.allowed = check(validPasswordChars,  local('Password should have lower and uppercase letters with numbers.'));
-    password.symbols = check(noSymbolsInPassword, msg('valid', localKey('textPassword')));
-
-    function regex(regexp, allowed) {
-        return function(str) {
-            return regexp.test(str) ?
-                dv.ok(str) :
-                dv.fail(err('reg', allowed));
-        };
-    }
-
-    function lengthRange(start, end) {
-        var range = template('([_1]-[_2])', [start, end]);
-        return function(str) {
-            var len = str.length;
-            return (len >= start && len <= end) ?
-                dv.ok(str) :
-                dv.fail(err('range', range));
-        };
-    }
-
-    function momentFmt(format, error) {
-        return function(str) {
-            var date = moment(str, format, true);
-            return date.isValid() ?
-                dv.ok(date) :
-                dv.fail(error);
-        };
-    }
-
-    return {
-        err: err,
-        momentFmt: momentFmt,
-        required:  required,
-        password:  password,
-        email:     email,
-        token:     token,
-        regex:     regex,
-        lengthRange: lengthRange,
-    };
-})();
-
-;var ValidationUI = {
-    clear: function() {
-        $('.errorfield[data-is-error-field]').remove();
-    },
-    draw:  function(selector, message) {
-        var $parent = $(selector).parent();
-        var $p = $('<p/>', {
-            class: 'errorfield',
-            text:  text.localize(message),
-        });
-        $p.attr('data-is-error-field', true);
-        $parent.append($p);
-    },
-};
-
-
-/**
- * Replaces error messages returned by a validator by the given
- * error message `err`. Only use this on validators with one
- * error message.
- */
-function customError(fn, err) {
-    return function(value) {
-        var rv = fn(value);
-        if (!rv.isOk) rv.value = [err];
-        return rv;
-    };
-}
-
-
-function withContext(ctx) {
-    return function(msg) {
-        return {
-            ctx: ctx,
-            err: msg,
-        };
-    };
-}
-
-/**
- * Validates data given a schema.
- *
- * @param data    An object.
- * @param schema  An object in the form {key: Array}, where the Array
- *                contains functions which accept two arguments- the current
- *                value and the objet being validated, and return either dv.ok
- *                or dv.fail.
- * @returns {Object}  {errors: errors, values: values, raw: data} where
- *                    errors is an array of {ctx: key, err: message} objects,
- *                    values is an object with the collected successful values,
- *                    raw is the data passed in.
- */
-function validate_object(data, schema) {
-    var keys = Object.keys(schema);
-    var values = {};
-    var rv = dv.combine([], keys.map(function(ctx) {
-        var res = dv.ok(data[ctx]);
-        var fns = schema[ctx];
-        for (var i = 0; i < fns.length; i++) {
-            res = fns[i](res.value, data);
-            if (!res.isOk) return res.fmap(withContext(ctx));
-        }
-        values[ctx] = res.value;
-        return res;
-    }));
-    return {
-        errors: rv.value,
-        values: values,
-        raw:    data,
-    };
-}
-
-
-function stripTrailing(name) {
-    return name.replace(/\[\]$/, '');
-}
-
-/**
- * Helper for enabling form validation when the user starts and stops typing.
- *
- * @param form             A form Element (not JQuery object).
- * @param config           Configuration object.
- * @param config.extract   Returns the current data on the form.
- * @param config.validate  Receives the current data returns an object with
- *                         {values: Object, errors: [{ctx: key, err: msg}...]}.
- * @param config.stop      Called when the user stops typing with the return
- *                         value of `config.validate`.
- * @param config.submit    Called on submit event with event and validation state.
- */
-function bind_validation(form, config) {
-    var extract  = config.extract;
-    var validate = config.validate;
-    var stop     = config.stop;
-    var submit   = config.submit;
-    var seen     = {};
-
-    function onStart(ev) {
-        seen[stripTrailing(ev.target.name)] = true;
-    }
-
-    function onStop(ev) {
-        var data = extract();
-        var validation = validate(data);
-        validation.errors = validation.errors.filter(function(err) {
-            return seen[err.ctx];
-        });
-        stop(validation);
-    }
-
-    form.addEventListener('submit', function(ev) {
-        var data = extract();
-        var validation = validate(data);
-        stop(validation);
-        submit(ev, validation);
-    });
-
-    form.addEventListener('change', function(ev) {
-        onStart(ev);
-        onStop(ev);
-    });
-    done_typing(form, {
-        start: onStart,
-        stop:  onStop,
-    });
-}
-
-/**
- * Generates (and binds) a config for the given form.
- *
- * @param form  Form element.
- * @param opts  Config object.
- * @param opts.extract   Optional. Defaults to `formToObj(form)`.
- * @param opts.submit    Required.
- * @param opts.validate  Optional. If you do not specify this then opts.schema
- *                       is required.
- * @param opts.schema    See above.
- * @param opts.stop      Optional.
- *
- */
-bind_validation.simple = function(form, opts) {
-    bind_validation(form, {
-        submit:   opts.submit,
-        extract:  opts.extract  || function() { return formToObj(form); },
-        validate: opts.validate || function(data) { return validate_object(data, opts.schema); },
-        stop:     opts.stop     || function(validation) {
-            ValidationUI.clear();
-            validation.errors.forEach(function(err) {
-                var sel = 'input[name=' + stripTrailing(err.ctx) + ']';
-                ValidationUI.draw(sel, err.err);
-            });
-        },
-    });
-};
-
-;/*
  * It provides a abstraction layer over native javascript Websocket.
  *
  * Provide additional functionality like if connection is close, open
@@ -26311,20 +25751,9 @@ function BinarySocketClass() {
                         page.client.check_tnc();
                         if (response.website_status.hasOwnProperty('clients_country')) {
                             localStorage.setItem('clients_country', response.website_status.clients_country);
-                            if (!$('body').hasClass('BlueTopBack')) {
-                                checkClientsCountry();
-                            }
+                            checkClientsCountry();
                         }
                     }
-                } else if (type === 'get_account_status' && response.get_account_status) {
-                  var withdrawal_locked, i;
-                  for (i = 0; i < response.get_account_status.status.length; i++) {
-                    if (response.get_account_status.status[i] === 'withdrawal_locked') {
-                      withdrawal_locked = 'locked';
-                      break;
-                    }
-                  }
-                  sessionStorage.setItem('withdrawal_locked', withdrawal_locked || 'unlocked');
                 }
                 if (response.hasOwnProperty('error')) {
                     if(response.error && response.error.code) {
@@ -27110,54 +26539,6 @@ pjax_config_page_require_auth("tnc_approvalws", function() {
         }
     };
 });
-
-;function submit_email() {
-    Content.populate();
-    var form = $('#verify-email-form')[0];
-    if (!form) {
-        return;
-    }
-
-    bind_validation.simple(form, {
-        schema: {
-            email: [ValidateV2.required, ValidateV2.email]
-        },
-        stop: function(info) {
-            $('#signup_error').text('');
-            info.errors.forEach(function(err) {
-                $('#signup_error')
-                    .css({display: 'block'})
-                    .text(err.err);
-            });
-        },
-        submit: function(ev, info) {
-            ev.preventDefault();
-            if (info.errors.length) return;
-            openAccount(info.values.email);
-        },
-    });
-
-    function handler(msg) {
-        var response = JSON.parse(msg.data);
-        if (!response) return;
-
-        var type  = response.msg_type;
-        var error = response.error;
-        if (type === 'verify_email' && !error) {
-            window.location.href = page.url.url_for('new_account/virtualws');
-            return;
-        }
-        if (!error || !error.message) return;
-        $('#signup_error')
-            .css({display: 'inline-block'})
-            .text(error.message);
-    }
-
-    function openAccount(email) {
-        BinarySocket.init({onmessage: handler});
-        BinarySocket.send({verify_email: email, type: 'account_opening'});
-    }
-}
 
 ;var ViewBalance = (function () {
     function init(){

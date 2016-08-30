@@ -129,9 +129,7 @@ var pjax_config = function() {
 
 var init_pjax = function () {
     var document_location = document.URL;
-    if(!$('body').hasClass('BlueTopBack')) { //No Pjax for BO.
-        pjax.connect(pjax_config());
-    }
+    pjax.connect(pjax_config());
 };
 
 var load_with_pjax = function(url) {

@@ -166,20 +166,9 @@ function BinarySocketClass() {
                         page.client.check_tnc();
                         if (response.website_status.hasOwnProperty('clients_country')) {
                             localStorage.setItem('clients_country', response.website_status.clients_country);
-                            if (!$('body').hasClass('BlueTopBack')) {
-                                checkClientsCountry();
-                            }
+                            checkClientsCountry();
                         }
                     }
-                } else if (type === 'get_account_status' && response.get_account_status) {
-                  var withdrawal_locked, i;
-                  for (i = 0; i < response.get_account_status.status.length; i++) {
-                    if (response.get_account_status.status[i] === 'withdrawal_locked') {
-                      withdrawal_locked = 'locked';
-                      break;
-                    }
-                  }
-                  sessionStorage.setItem('withdrawal_locked', withdrawal_locked || 'unlocked');
                 }
                 if (response.hasOwnProperty('error')) {
                     if(response.error && response.error.code) {
