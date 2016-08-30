@@ -659,7 +659,7 @@ Header.prototype = {
     },
     register_dynamic_links: function() {
         var logged_in_url = this.client.is_logged_in ?
-            page.url.url_for('user/my_accountws') :
+            page.url.url_for('user/settings/metatrader') :
             page.url.url_for('');
 
         $('#logo').attr('href', logged_in_url).on('click', function(event) {
