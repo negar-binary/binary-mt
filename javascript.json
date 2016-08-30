@@ -51,6 +51,7 @@
     "src/javascript/binary/websocket_pages/user/account/settings/metatrader.js",
     "src/javascript/binary/websocket_pages/user/account/settings/metatrader/metatrader.data.js",
     "src/javascript/binary/websocket_pages/user/account/settings/metatrader/metatrader.ui.js",
+    "src/javascript/binary/websocket_pages/user/tnc_approval.js",
     "src/javascript/binary/websocket_pages/user/verify_email.js",
     "src/javascript/binary/websocket_pages/user/viewbalance/viewbalance.init.js",
     "src/javascript/binary/websocket_pages/user/viewbalance/viewbalance.ui.js",

@@ -48,19 +48,12 @@ var GTM = (function() {
 
     var event_handler = function(get_settings) {
         if (!gtm_applicable()) return;
-        var is_login      = localStorage.getItem('GTM_login')      === '1',
-            is_newaccount = localStorage.getItem('GTM_newaccount') === '1';
-        if(!is_login && !is_newaccount) {
+        var is_login      = localStorage.getItem('GTM_login')      === '1';
+        if(!is_login) {
             return;
         }
 
         localStorage.removeItem('GTM_login');
-        localStorage.removeItem('GTM_newaccount');
-
-        var affiliateToken = Cookies.getJSON('affiliate_tracking');
-        if (affiliateToken) {
-            GTM.push_data_layer({'bom_affiliate_token': affiliateToken.t});
-        }
 
         var data = {
             'visitorId'   : page.client.loginid,
@@ -68,11 +61,8 @@ var GTM = (function() {
             'bom_email'   : get_settings.email,
             'url'         : window.location.href,
             'bom_today'   : Math.floor(Date.now() / 1000),
-            'event'       : is_newaccount ? 'new_account' : 'log_in'
+            'event'       : 'log_in'
         };
-        if(is_newaccount) {
-            data['bom_date_joined'] = data['bom_today'];
-        }
         if(!page.client.is_virtual()) {
             data['bom_age']       = parseInt((moment().unix() - get_settings.date_of_birth) / 31557600);
             data['bom_firstname'] = get_settings.first_name;
@@ -82,75 +72,15 @@ var GTM = (function() {
         GTM.push_data_layer(data);
     };
 
-    var push_purchase_data = function(response) {
-        if (!gtm_applicable() || page.client.is_virtual()) return;
-        var req = response.echo_req.passthrough,
-            buy = response.buy;
-        if (!buy) return;
-        var data = {
-            'event'              : 'buy_contract',
-            'visitorId'          : page.client.loginid,
-            'bom_symbol'         : req.symbol,
-            'bom_market'         : markets && markets.by_symbol(req.symbol) ?
-                markets.by_symbol(req.symbol).market.name :
-                document.getElementById('contract_markets').value,
-            'bom_currency'       : req.currency,
-            'bom_contract_type'  : req.contract_type,
-            'bom_contract_id'    : buy.contract_id,
-            'bom_transaction_id' : buy.transaction_id,
-            'bom_buy_price'      : buy.buy_price,
-            'bom_payout'         : buy.payout,
-        };
-        // Spread contracts
-        if (/spread/i.test(req.contract_type)) {
-            $.extend(data, {
-                'bom_stop_type'         : req.stop_type,
-                'bom_amount_per_point'  : buy.amount_per_point,
-                'bom_stop_loss_level'   : buy.stop_loss_level,
-                'bom_stop_profit_level' : buy.stop_profit_level,
-            });
-        } else {
-            $.extend(data, {
-                'bom_amount'      : req.amount,
-                'bom_basis'       : req.basis,
-                'bom_expiry_type' : document.getElementById('expiry_type').value,
-            });
-            if(data.bom_expiry_type === 'duration') {
-                $.extend(data, {
-                    'bom_duration'      : req.duration,
-                    'bom_duration_unit' : req.duration_unit,
-                });
-            }
-            if(isVisible(document.getElementById('barrier'))) {
-                data['bom_barrier'] = req.barrier;
-            } else if(isVisible(document.getElementById('barrier_high'))) {
-                data['bom_barrier_high'] = req.barrier;
-                data['bom_barrier_low']  = req.barrier2;
-            }
-            if(isVisible(document.getElementById('prediction'))) {
-                data['bom_prediction']  = req.barrier;
-            }
-        }
-
-        GTM.push_data_layer(data);
-    };
-
     var set_login_flag = function() {
         if (!gtm_applicable()) return;
         localStorage.setItem('GTM_login', '1');
     };
 
-    var set_newaccount_flag = function() {
-        if (!gtm_applicable()) return;
-        localStorage.setItem('GTM_newaccount', '1');
-    };
-
     return {
         push_data_layer     : push_data_layer,
         event_handler       : event_handler,
-        push_purchase_data  : push_purchase_data,
-        set_login_flag      : set_login_flag,
-        set_newaccount_flag : set_newaccount_flag,
+        set_login_flag      : set_login_flag
     };
 }());
 
@@ -181,19 +111,6 @@ Client.prototype = {
             $('.login_link').click(function(){Login.redirect_to_login();});
         }
         return !this.is_logged_in;
-    },
-    redirect_if_is_virtual: function(redirectPage) {
-        var is_virtual = this.is_virtual();
-        if(is_virtual) {
-            window.location.href = page.url.url_for(redirectPage || '');
-        }
-        return is_virtual;
-    },
-    redirect_if_login: function() {
-        if(page.client.is_logged_in) {
-            window.location.href = page.url.default_redirect_url();
-        }
-        return page.client.is_logged_in;
     },
     is_virtual: function() {
         return this.get_storage_value('is_virtual') === '1';
@@ -246,7 +163,6 @@ Client.prototype = {
             that.set_storage_value(item, '');
         });
         localStorage.removeItem('website.tnc_version');
-        sessionStorage.setItem('currencies', '');
     },
     update_storage_values: function() {
         this.clear_storage_values();
@@ -283,28 +199,6 @@ Client.prototype = {
         cookie_expire.setDate(cookie_expire.getDate() + 60);
         var cookie = new CookieStorage(cookieName, domain);
         cookie.write(Value, cookie_expire, true);
-    },
-    process_new_account: function(email, loginid, token, is_virtual) {
-        if(!email || !loginid || !token) {
-            return;
-        }
-        // save token
-        this.add_token(loginid, token);
-        // set cookies
-        this.set_cookie('email'       , email);
-        this.set_cookie('login'       , token);
-        this.set_cookie('loginid'     , loginid);
-        this.set_cookie('loginid_list', is_virtual ? loginid + ':V:E' : loginid + ':R:E' + '+' + Cookies.get('loginid_list'));
-        // set local storage
-        GTM.set_newaccount_flag();
-        localStorage.setItem('active_loginid', loginid);
-        window.location.href = page.url.default_redirect_url();
-    },
-    can_upgrade_gaming_to_financial: function(data) {
-        return (data.hasOwnProperty('financial_company') && data.financial_company.shortcode === 'maltainvest');
-    },
-    can_upgrade_virtual_to_financial: function(data) {
-        return (data.hasOwnProperty('financial_company') && !data.hasOwnProperty('gaming_company') && data.financial_company.shortcode === 'maltainvest');
     }
 };
 
@@ -360,42 +254,15 @@ URL.prototype = {
         this.is_valid = true;
         $(this).trigger("change", [ this ]);
     },
-    invalidate: function() {
-        this.is_valid = false;
-    },
-    update: function(url) {
-        var state_info = { container: 'content', url: url, useClass: 'pjaxload' };
-        if(this.history_supported) {
-            history.pushState(state_info, '', url);
-            this.reset();
-        }
-        this.is_valid = true;
-    },
     param: function(name) {
         var param_hash= this.params_hash();
         return param_hash[name];
-    },
-    replaceQueryParam: function (param, newval, search) {
-      var regex = new RegExp("([?;&])" + param + "[^&;]*[;&]?");
-      var query = search.replace(regex, "$1").replace(/&$/, '');
-      return (query.length > 2 ? query + "&" : "?") + (newval ? param + "=" + newval : '');
-    },
-    param_if_valid: function(name) {
-        if(this.is_valid) {
-           return this.param(name);
-        }
-        return;
     },
     path_matches: function(url) {
         //pathname is /d/page.cgi. Eliminate /d/ and /c/ from both urls.
         var this_pathname = this.location.pathname.replace(/\/[d|c]\//g, '');
         var url_pathname = url.location.pathname.replace(/\/[d|c]\//g, '');
         return (this_pathname == url_pathname || '/' + this_pathname == url_pathname);
-    },
-    params_hash_to_string: function(params) {
-        return Object.keys(params)
-            .map(function(key) { return key + '=' + params[key]; })
-            .join('&');
     },
     is_in: function(url) {
         if(this.path_matches(url)) {
@@ -464,23 +331,15 @@ Menu.prototype = {
         }
     },
     show_main_menu: function() {
-        $("#main-menu").removeClass('hidden');
         $("#main-menu > div").removeClass('hidden');
         this.activate_main_menu();
-    },
-    hide_main_menu: function() {
-        $("#main-menu").addClass('hidden');
     },
     activate_main_menu: function() {
         //First unset everything.
         $("#main-menu li.item").removeClass('active');
         $("#main-menu li.item").removeClass('hover');
-        $("#main-menu li.sub_item a").removeClass('a-active');
 
         var active = this.active_main_menu();
-        if(active.subitem) {
-            active.subitem.addClass('a-active');
-        }
 
         if(active.item) {
             active.item.addClass('active');
@@ -518,12 +377,7 @@ Menu.prototype = {
     },
     active_main_menu: function() {
         var page_url = this.page_url;
-        if(/detailsws|securityws|self_exclusionws|limitsws|api_tokenws|authorised_appsws|iphistoryws|assessmentws/i.test(page_url.location.href)) {
-            page_url = new URL($('#main-menu a[href*="user/settingsws"]').attr('href'));
-        }
-
         var item;
-        var subitem;
 
         //Is something selected in main items list
         $("#main-menu .items a").each(function () {
@@ -533,18 +387,7 @@ Menu.prototype = {
             }
         });
 
-        $("#main-menu .sub_items a").each(function(){
-            var link_href = $(this).attr('href');
-            if (link_href) {
-                var url = new URL(link_href);
-                if(url.is_in(page_url)) {
-                    item = $(this).closest('.item');
-                    subitem = $(this);
-                }
-            }
-        });
-
-        return { item: item, subitem: subitem };
+        return { item: item };
     },
     register_dynamic_links: function() {
         var stored_market = page.url.param('market') || LocalStore.get('bet_page.market') || 'forex';
@@ -689,7 +532,7 @@ Header.prototype = {
         page.client.clear_storage_values();
         LocalStore.remove('client.tokens');
         sessionStorage.removeItem('withdrawal_locked');
-        var cookies = ['login', 'loginid', 'loginid_list', 'email', 'settings', 'affiliate_token', 'affiliate_tracking', 'residence', 'allowed_markets'];
+        var cookies = ['login', 'loginid', 'loginid_list', 'email', 'settings', 'residence'];
         var domains = [
             '.' + document.domain.split('.').slice(-2).join('.'),
             '.' + document.domain,
@@ -886,7 +729,6 @@ Page.prototype = {
         this.header.on_load();
         this.on_change_language();
         this.on_change_loginid();
-        this.record_affiliate_exposure();
         this.contents.on_load();
         if (CommonData.getLoginToken()) {
             ViewBalance.init();
@@ -951,37 +793,6 @@ Page.prototype = {
         lang = lang.trim();
         SessionStore.set('selected.language', lang.toUpperCase());
         return window.location.href.replace(new RegExp('\/' + page.language() + '\/', 'i'), '/' + lang.toLowerCase() + '/');
-    },
-    record_affiliate_exposure: function() {
-        var token = this.url.param('t');
-        if (!token || token.length !== 32) {
-            return false;
-        }
-        var token_length = token.length;
-        var is_subsidiary = /\w{1}/.test(this.url.param('s'));
-
-        var cookie_token = Cookies.getJSON('affiliate_tracking');
-        if (cookie_token) {
-            //Already exposed to some other affiliate.
-            if (is_subsidiary && cookie_token && cookie_token.t) {
-                return false;
-            }
-        }
-
-        //Record the affiliate exposure. Overwrite existing cookie, if any.
-        var cookie_hash = {};
-        if (token_length === 32) {
-            cookie_hash["t"] = token.toString();
-        }
-        if (is_subsidiary) {
-            cookie_hash["s"] = "1";
-        }
-
-        Cookies.set("affiliate_tracking", cookie_hash, {
-            expires: 365, //expires in 365 days
-            path: '/',
-            domain: '.' + location.hostname.split('.').slice(-2).join('.')
-        });
     },
     reload: function(forcedReload) {
         window.location.reload(forcedReload ? true : false);
