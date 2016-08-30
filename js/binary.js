@@ -28071,7 +28071,7 @@ var BinarySocket = new BinarySocketClass();
             makeTextRow('Name', mt5Accounts[accType].name) +
             // makeTextRow('Leverage', mt5Accounts[accType].leverage)
             makeTextRow('', text.localize('Start trading with your ' + (accType === 'demo' ? 'Demo' : 'Real') + ' Account') +
-                ' <a class="button" href="' + page.url.url_for('metatrader/download') + '" style="margin:0 20px;">' +
+                ' <a class="button" href="' + page.url.url_for('download-metatrader') + '" style="margin:0 20px;">' +
                     '<span>' + text.localize('Download MetaTrader') + '</span></a>')
         ));
         $('#details-' + accType).html($details.html());
@@ -28228,7 +28228,7 @@ var BinarySocket = new BinarySocketClass();
                             passwordMeter();
                         }
                         $form.removeClass(hiddenClass);
-                    }   
+                    }
                 }
             }
         }
