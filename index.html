@@ -43,7 +43,7 @@
                 return conLang;
             }
             function redirect() {
-                window.location.href = (lang || 'en').toLowerCase() + '/' + 'user/settings/metatrader.html' + window.location.search;
+                window.location.href = (lang || 'en').toLowerCase() + '/' + (getCookieItem('loginid') ? 'user/settings/metatrader' : 'home') + window.location.search;
             }
             function isDelayedRedirect() {
                 if(isGtmApplicable() && !window.redirectTimeOut) {
