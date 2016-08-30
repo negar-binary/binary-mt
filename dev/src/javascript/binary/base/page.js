@@ -142,6 +142,7 @@ Client.prototype = {
         this.set_storage_value('is_virtual', TUser.get().is_virtual);
         this.check_storage_values();
         page.contents.activate_by_client_type();
+        page.contents.topbar_message_visibility();
     },
     check_tnc: function() {
         if(!page.client.is_virtual() && sessionStorage.getItem('check_tnc') === '1') {
@@ -530,7 +531,6 @@ Contents.prototype = {
     on_load: function() {
         this.activate_by_client_type();
         this.update_content_class();
-        this.topbar_message_visibility();
     },
     on_unload: function() {
         if ($('.unbind_later').length > 0) {
