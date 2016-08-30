@@ -509,9 +509,13 @@ Menu.prototype = {
         if(active) {
             active.addClass('active');
         }
+        if (page.client.is_logged_in) {
+            this.show_main_menu();
+        }
     },
     show_main_menu: function() {
         $("#main-menu").removeClass('hidden');
+        $("#main-menu > div").removeClass('hidden');
         this.activate_main_menu();
     },
     hide_main_menu: function() {
