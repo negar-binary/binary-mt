@@ -809,7 +809,6 @@ p.no-para-margin {
 }
 .tab-menu-wrap ul li.active a, #content .tab-menu-wrap ul li.active a {
   color: #e98024;
-  background: url("../images/common/nav/menu-sub-selection_1.png") no-repeat bottom;
 }
 .tab-menu-wrap ul li.active ul, #content .tab-menu-wrap ul li.active ul {
   z-index: 1;
@@ -981,7 +980,6 @@ p.no-para-margin {
 }
 #content .page-section > .tab-menu ul.tm-ul li.active a {
   color: #e98024;
-  background: url("../images/common/nav/menu-sub-selection_1.png") no-repeat bottom;
 }
 #content .page-section > .tab-menu ul.tm-ul-2 li.active a.tm-a-2 {
   color: #44484C;
