@@ -241,7 +241,7 @@ URL.prototype = {
                 staticHost = staticHost.substr(0, staticHost.indexOf('/js/') + 1);
             }
             else {
-                staticHost = 'https://www.binary.com/';
+                staticHost = 'https://mt.binary.com/';
             }
 
             window.staticHost = staticHost;

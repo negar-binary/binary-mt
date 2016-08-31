@@ -257,6 +257,7 @@ var MetaTraderUI = (function() {
             isAuthenticated = true;
             manageTabContents();
         } else if(!page.client.is_virtual()) {
+            $('#authenticate a').attr('href', 'https://www.binary.com/' + (page.language().toLowerCase() || 'en') + '/user/authenticatews.html');
             $('#authenticate').removeClass(hiddenClass);
         }
     };

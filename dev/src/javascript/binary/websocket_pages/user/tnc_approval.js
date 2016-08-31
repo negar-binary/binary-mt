@@ -40,7 +40,7 @@ var TNCApproval = (function() {
         $('#tnc_approval').removeClass(hiddenClass);
         var tnc_message = template($('#tnc-message').html(), [
             page.client.get_storage_value('landing_company_name'),
-            'https://www.binary.com/en/terms-and-conditions.html'
+            'https://www.binary.com/' + (page.language().toLowerCase() || 'en') + '/terms-and-conditions.html'
         ]);
         $('#tnc-message').html(tnc_message).removeClass(hiddenClass);
         $('#btn-accept').text(text.localize('OK'));

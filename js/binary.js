@@ -16281,7 +16281,7 @@ URL.prototype = {
                 staticHost = staticHost.substr(0, staticHost.indexOf('/js/') + 1);
             }
             else {
-                staticHost = 'https://www.binary.com/';
+                staticHost = 'https://mt.binary.com/';
             }
 
             window.staticHost = staticHost;
@@ -18375,6 +18375,7 @@ var BinarySocket = new BinarySocketClass();
             isAuthenticated = true;
             manageTabContents();
         } else if(!page.client.is_virtual()) {
+            $('#authenticate a').attr('href', 'https://www.binary.com/' + (page.language().toLowerCase() || 'en') + '/user/authenticatews.html');
             $('#authenticate').removeClass(hiddenClass);
         }
     };
@@ -18607,7 +18608,7 @@ var BinarySocket = new BinarySocketClass();
         $('#tnc_approval').removeClass(hiddenClass);
         var tnc_message = template($('#tnc-message').html(), [
             page.client.get_storage_value('landing_company_name'),
-            'https://www.binary.com/en/terms-and-conditions.html'
+            'https://www.binary.com/' + (page.language().toLowerCase() || 'en') + '/terms-and-conditions.html'
         ]);
         $('#tnc-message').html(tnc_message).removeClass(hiddenClass);
         $('#btn-accept').text(text.localize('OK'));
