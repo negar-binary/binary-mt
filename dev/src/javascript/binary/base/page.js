@@ -5,7 +5,7 @@ var GTM = (function() {
     "use strict";
 
     var gtm_applicable = function() {
-        return (getAppId() === '1');
+        return (!/binary\-mt/.test(window.location.href));
     };
 
     var gtm_data_layer_info = function(data) {
