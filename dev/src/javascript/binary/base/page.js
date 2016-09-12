@@ -5,7 +5,10 @@ var GTM = (function() {
     "use strict";
 
     var gtm_applicable = function() {
-        return (!/binary\-mt/.test(window.location.href));
+        // return (!/binary\-mt/.test(window.location.href));
+        // line above to be uncommented when gtm is added here
+        // line below to be removed along with these comments
+        return false;
     };
 
     var gtm_data_layer_info = function(data) {
