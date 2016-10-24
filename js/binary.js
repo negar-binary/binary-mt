@@ -17746,7 +17746,7 @@ pjax_config_page("/terms-and-conditions", function() {
             function updateTab() {
                 hash = /^#(risk-tab|legal-tab)$/.test(window.location.hash) ? window.location.hash : '#legal-tab';
                 //remove active class and hide all content
-                $('#legal-menu li').removeClass('active, a-active');
+                $('#legal-menu li').removeClass('active a-active');
                 $('.menu-has-sub-item div.toggle-content').addClass('invisible');
                 //add active class to the right tab and show expected content
                 $(hash).addClass('active')
