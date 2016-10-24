@@ -17745,9 +17745,12 @@ pjax_config_page("/terms-and-conditions", function() {
             var hash;
             function updateTab() {
                 hash = /^#(risk-tab|legal-tab)$/.test(window.location.hash) ? window.location.hash : '#legal-tab';
+                //remove active class and hide all content
+                $('#legal-menu li').removeClass('active, a-active');
+                $('.menu-has-sub-item div.toggle-content').addClass('invisible');
+                //add active class to the right tab and show expected content
                 $(hash).addClass('active')
                        .find('a').addClass('a-active');
-                $('.menu-has-sub-item div.toggle-content').addClass('invisible');
                 $(hash + '-content').removeClass('invisible');
             }
             $(window).on('hashchange', function() {
