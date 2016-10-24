@@ -54,14 +54,14 @@
           <link rel="alternate" href="/binary-mt/zh_cn/terms-and-conditions.html" hreflang="ZH_CN" /> 
           <link rel="alternate" href="/binary-mt/zh_tw/terms-and-conditions.html" hreflang="ZH_TW" /> 
         
-         <link rel="stylesheet" href="/binary-mt/css/binary.min.css?qanyocf1">
-         <link rel="stylesheet" href="https://style.binary.com/binary.css?qanyocf1">
+         <link rel="stylesheet" href="/binary-mt/css/binary.min.css?28xu859a">
+         <link rel="stylesheet" href="https://style.binary.com/binary.css?28xu859a">
         
         <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.includes,String.prototype.includes&unknown=polyfill"></script>
 <script>
     //A global variable required to initialize Page object.
-    window.page_params = {settings: {"valid_loginids":"MX|MF|VRTC|MLT|CR|FOG|VRTJ|JP","image_link":{"hourglass":"/binary-mt/images/common/hourglass_1.gif"}}};
-</script>  <script src='/binary-mt/js/binary.js?qanyocf1' defer async></script>
+    window.page_params = {settings: {"image_link":{"hourglass":"/binary-mt/images/common/hourglass_1.gif"},"valid_loginids":"MX|MF|VRTC|MLT|CR|FOG|VRTJ|JP"}};
+</script>  <script src='/binary-mt/js/binary.js?28xu859a' defer async></script>
     </head>
 
 
@@ -187,12 +187,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         
         <div class="container">
 
-<div class="static_full has-tabs">
-    <ul>
-        <li><a href="#legal-tab">Terms and Conditions</a></li>
-        <li><a href="#risk-tab">Risk Disclosure Statement</a></li>
-    </ul>
-    <div id="legal-tab">
+<div class="content-tab-container static_full">
+  <div class="tab-menu">
+    <div class="tab-menu-wrap container">
+      <ul id="legal-menu" class="tm-ul">
+        <li id="legal-tab" class="tm-li active first">
+            <a href="#legal-tab" class="tm-a first a-active">Terms and Conditions</a>
+        </li>
+        <li id="risk-tab" class="tm-li last">
+            <a href="#risk-tab" class="tm-a">Risk Disclosure Statement</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="tab-content">
+    <div class="tab-content-wrapper menu-has-sub-item">
+      <div id="legal-tac-tab-content" class="toggle-content">
         <div class="gr-12 gr-padding-10">
     <h2>
         Terms and Conditions
@@ -623,8 +633,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             </ol>
     <!-- </ol> -->
 </div>
-    </div>
-    <div id="risk-tab">
+      </div>
+      <div id="risk-tab-content" class="toggle-content invisible">
         <div class="gr-12 gr-padding-10">
     <h2>Risk Disclosure Statement</h2>
     <p>This Risk Disclosure Statement is not exhaustive and is not intended to constitute a comprehensive statement of all the risks to which you might be exposed to and does not describe all risks inherent to forex and contracts for differences that exist now or which may arise in the future. Its objective is rather to provide you with information for you to reasonably understand the risks associated with forex and contracts for differences offered by Binary.com in our interest to provide you with the best possible trading experience.</p>
@@ -655,7 +665,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <h2>External forces</h2>
     <p>Your forex and contracts for differences transactions with Binary.com are linked to an underlying financial instrument and you will be exposed to price, currency exchange, interest rate or other volatility of the market to which your financial instrument is related to, especially if the market is of a jurisdiction that is foreign to you. Forex and contracts for differences trading over the internet via an electronic trading platform is subject to data latency risk which may result in delays in order execution.</p>
 </div>
+      </div>
     </div>
+  </div>
 </div>
 
 
