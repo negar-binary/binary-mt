@@ -160,11 +160,21 @@ fieldset {
   padding: 5px;
   margin-bottom: 10px;
 }
+fieldset#formlayout {
+  background: none;
+  border: 0;
+}
+fieldset#formlayout .errorfield {
+  margin-left: 0;
+}
 fieldset legend {
   color: #44484C;
   padding: 0 0.8em;
   font-weight: bold;
   text-transform: capitalize;
+}
+fieldset #inputheading {
+  line-height: 25px;
 }
 
 textarea {
@@ -292,6 +302,14 @@ img.small {
 .disabled-link {
   color: #DEDEDE !important;
   pointer-events: none;
+}
+
+.button.full-width, .button.full-width span {
+  display: block;
+}
+
+.button:hover {
+  text-decoration: none;
 }
 
 *, *:after, *:before {
@@ -622,13 +640,20 @@ meter#password-meter::-webkit-meter-bar {
   box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.25) inset;
 }
 
-#accordion .ui-accordion-content {
+#accordion .ui-accordion-content, .accordion .ui-accordion-content {
   padding-top: 0;
 }
 
 /* pages */
 .home-content #banner {
   background: url("../images/pages/home/banner-background_1.png") 0 0/100% 108% no-repeat;
+}
+.home-content .buttons-row p {
+  margin: 8px 0;
+}
+
+#mt-container .sidebar-left {
+  margin-bottom: 20px;
 }
 
 /* static pages */
@@ -640,6 +665,12 @@ meter#password-meter::-webkit-meter-bar {
 
 #client_loginid {
   min-width: 210px;
+}
+
+.big-error-code {
+  color: #DEDEDE;
+  font-size: 10em;
+  font-weight: normal;
 }
 
 /* external stylesheets
