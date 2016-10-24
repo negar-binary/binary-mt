@@ -17739,6 +17739,14 @@ pjax_config_page("/404", function() {
     };
 });
 
+pjax_config_page("/terms-and-conditions", function() {
+    return {
+        onLoad: function() {
+            $('.has-tabs').tabs();
+        }
+    };
+});
+
 ;pjax_config_page("endpoint", function(){
     return {
         onLoad: function() {
