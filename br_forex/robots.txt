@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://mt.binary.com/sitemap.xml

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style id="antiClickjack">body{display:none !important;}</style>
+        <script type="text/javascript">
+            if (self === top) {
+                var antiClickjack = document.getElementById("antiClickjack");
+                antiClickjack.parentNode.removeChild(antiClickjack);
+            } else {
+                top.location = self.location;
+            }
+        </script>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <meta http-equiv="Content-Language" content="TH" />
+        <meta name="description" content=" Binary.com gives everyone an easy way to participate in the financial markets. Trade with as little as $1 USD on major currencies, stocks, indices, and commodities." />
+        <meta name="keywords" content=" binary options, forex, forex trading, online trading, financial trading, binary trading, index trading, trading indices, forex trades, trading commodities, binary options strategy, binary broker, binary bet, binary options trading platform, binary strategy, finance, stocks, investment, trading" />
+        <meta name="author" content="" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="dcterms.rightsHolder" content="" />
+        <meta name="dcterms.rights" content="" />
+        <meta name="google-site-verification" content="roReCEK-wNa1EMA6ZM9a4zCOQOMqxfJjvfsZMC9qh_k" />
+        <meta property="og:title" content="" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="/binary-mt/br_forex/images/common/og_image.gif" />
+
+        <title>Volatility Indices Contract Specifications | mt.binary.com</title>
+
+        <link rel="apple-touch-icon" sizes="57x57" href="/binary-mt/br_forex/images/favicons/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/binary-mt/br_forex/images/favicons/apple-touch-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/binary-mt/br_forex/images/favicons/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/binary-mt/br_forex/images/favicons/apple-touch-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/binary-mt/br_forex/images/favicons/apple-touch-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/binary-mt/br_forex/images/favicons/apple-touch-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/binary-mt/br_forex/images/favicons/apple-touch-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/binary-mt/br_forex/images/favicons/apple-touch-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/binary-mt/br_forex/images/favicons/apple-touch-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/binary-mt/br_forex/images/favicons/favicon-192x192.png">
+        <link rel="icon" type="image/png" sizes="160x160" href="/binary-mt/br_forex/images/favicons/favicon-160x160.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/binary-mt/br_forex/images/favicons/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/binary-mt/br_forex/images/favicons/favicon-16x16.png" >
+        <link rel="icon" type="image/png" sizes="32x32" href="/binary-mt/br_forex/images/favicons/favicon-32x32.png" >
+
+          <link rel="alternate" href="/binary-mt/br_forex/th/volatility-indices-contract.html?l=en" hreflang="EN" /> 
+          <link rel="alternate" href="/binary-mt/br_forex/th/volatility-indices-contract.html?l=de" hreflang="DE" /> 
+          <link rel="alternate" href="/binary-mt/br_forex/th/volatility-indices-contract.html?l=es" hreflang="ES" /> 
+          <link rel="alternate" href="/binary-mt/br_forex/th/volatility-indices-contract.html?l=fr" hreflang="FR" /> 
+          <link rel="alternate" href="/binary-mt/br_forex/th/volatility-indices-contract.html?l=id" hreflang="ID" /> 
+          <link rel="alternate" href="/binary-mt/br_forex/th/volatility-indices-contract.html?l=it" hreflang="IT" /> 
+          <link rel="alternate" href="/binary-mt/br_forex/th/volatility-indices-contract.html?l=pl" hreflang="PL" /> 
+          <link rel="alternate" href="/binary-mt/br_forex/th/volatility-indices-contract.html?l=pt" hreflang="PT" /> 
+          <link rel="alternate" href="/binary-mt/br_forex/th/volatility-indices-contract.html?l=ru" hreflang="RU" /> 
+          <link rel="alternate" href="/binary-mt/br_forex/th/volatility-indices-contract.html?l=th" hreflang="TH" /> 
+          <link rel="alternate" href="/binary-mt/br_forex/th/volatility-indices-contract.html?l=vi" hreflang="VI" /> 
+          <link rel="alternate" href="/binary-mt/br_forex/th/volatility-indices-contract.html?l=zh_cn" hreflang="ZH_CN" /> 
+          <link rel="alternate" href="/binary-mt/br_forex/th/volatility-indices-contract.html?l=zh_tw" hreflang="ZH_TW" /> 
+        
+         <link rel="stylesheet" href="/binary-mt/br_forex/css/binary.min.css?3srbi1vi">
+         <link rel="stylesheet" href="https://style.binary.com/binary.css?3srbi1vi">
+        
+        <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.includes,String.prototype.includes&unknown=polyfill"></script>
+<script>
+    //A global variable required to initialize Page object.
+    window.page_params = {settings: {"valid_loginids":"MX|MF|VRTC|MLT|CR|FOG|VRTJ|JP","image_link":{"hourglass":"/binary-mt/br_forex/images/common/hourglass_1.gif"}}};
+</script>  <script src='/binary-mt/br_forex/js/binary.js?3srbi1vi' defer async></script>
+    </head>
+
+
+<body class="TH">
+    <div id='page-wrapper'>
+    <div id="topbar">
+        <div class="container">
+            <div class="gr-row">
+                <div id="topbar-msg" class='gr-6 gr-5-t gr-12-p gr-12-m invisible upgrademessage'>
+                    <span class='gr-hide-m'>
+                        <span id='virtual-text'>You're using a Virtual Account.</span>
+                    </span>
+                </div>
+                <div class='gr-6 gr-7-t gr-12-p gr-12-m' id='topbar-info'>
+                    <div class="gr-row">
+                        <div class='gr-12 gr-7-m no-underline' id="gmt-clock" data-balloon-pos="down"></div>
+                        <!-- <div class='gr-3 gr-hide-m' id='contact-us'>
+                            <a class="pjaxload" href="contact">Contact Us</a>
+                        </div>
+                        <div class='gr-4 gr-5-m'>
+                            <div class="TH" id='language_select'>
+                                <select>
+            <option class='EN'>English</option>
+                <option class='DE'>Deutsch</option>
+                <option class='ES'>Español</option>
+                <option class='FR'>Français</option>
+                <option class='ID'>Bahasa Indonesia</option>
+                <option class='IT'>Italiano</option>
+                <option class='PL'>Polish</option>
+                <option class='PT'>Português</option>
+                <option class='RU'>Русский</option>
+                <option class='TH' selected='selected'>Thai</option>
+                <option class='VI'>Vietnamese</option>
+                <option class='ZH_CN'>简体中文</option>
+                <option class='ZH_TW'>繁體中文</option>
+    </select>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="header">
+        <div class='container'>
+            <div class='gr-12'>
+                <div class='gr-padding-10 gr-row gr-row-align-middle'>
+                    <div class='gr-3 gr-2-m gr-2-p'>
+                        <a id="logo" href="/binary-mt/br_forex/th/home.html">
+                            <div class='gr-row'>
+                                <div class='gr-3 gr-12-m gr-12-p gr-no-gutter'>
+                                    <img class='responsive' src="/binary-mt/br_forex/images/pages/binary-symbol-logo.svg" />
+                                </div>
+                                <div class='gr-9 gr-hide-m gr-hide-p' id='binary-logo-text'>
+                                    <img class='responsive' src="/binary-mt/br_forex/images/pages/binary-type-logo.svg" />
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class='gr-6 gr-hide-m gr-hide-p'></div>
+                    <div id="client-logged-in" class="gr-3 gr-8-m gr-8-p gr-no-gutter by_client_type client_real client_virtual align-end" style="display: none">
+                      <div id="logout">
+                        <form id="loginid-switch-form">
+                            <div id="login-fields">
+                                <select id="client_loginid" name="client_loginid">
+                                </select>
+                            </div>
+                            <div id="balance"></div>
+                            <a id="btn_logout" class="logout" href="javascript:;">LOG OUT</a>
+                        </form>
+                      </div>
+                    </div>
+                    <div id="client-logged-out" class="gr-3 gr-8-m gr-8-p gr-no-gutter by_client_type client_logged_out invisible">
+                        <a id="btn_login" class="button" href="javascript:;"><span>Log in</span></a>
+                    </div>
+                    <div class='gr-hide gr-show-m gr-2-m gr-show-p gr-2-p gr-no-gutter-mobile align-end'>
+                        <div id='mobile-menu-icon-container'>
+                            <a href='#mobile-menu' id='mobile-menu-icon'>
+                                <img class='responsive' src="/binary-mt/br_forex/images/pages/binary-mobile-menu.svg"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content-holder">
+    <div id="main-menu" class="tab-menu">
+    <div class="tab-menu-wrap container gr-hide-m gr-hide-p hidden">
+        <div class="gr-12 gr-no-gutter">
+            <ul class="items">  <li id="" class="item by_client_type client_real client_virtual">
+                    <a class="link with_login_cookies pjaxload" target="" href="/binary-mt/br_forex/th/user/settings/metatrader.html">MetaTrader Settings</a>
+                    
+                </li>  </ul>
+        </div>
+    </div>
+</div>
+    <div class='gr-hide gr-show-m gr-show-p' id='mobile-menu-container'>
+    <div class='gr-hide' id='mobile-menu'>
+        <ul>  <li id="" class="item by_client_type client_real client_virtual">
+                <a class="pjaxload link with_login_cookies pjaxload" href="/binary-mt/br_forex/th/user/settings/metatrader.html">MetaTrader Settings</a>
+                
+            </li>  </ul>
+    </div>
+</div>
+    <!-- FlushHead -->
+
+    <div id="content" class="volatility-indices-contract-content">
+        <!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-T65M2L"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-T65M2L');</script>
+<!-- End Google Tag Manager -->
+        <div id="page_info" style="display:none;">
+            <title>Volatility Indices Contract Specifications | mt.binary.com</title>
+            <div id="content_class">volatility-indices-contract-content</div>
+        </div>
+        
+        <div class="container">
+
+<div class="gr-row">
+    <div class="gr-12">
+      <h1>
+        Volatility Indices Contract Specifications
+      </h1>
+      <table>
+      <thead>
+          <tr>
+              <th>Symbol</th>
+              <th>Volatility 100 Index</th>
+              <th>Volatility 75 Index</th>
+              <th>Volatility 50 Index</th>
+              <th>Volatility 25 Index</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td>Volume (Trade Size)</td>
+              <td>&#36;1/point</td>
+              <td>&#36;1/point</td>
+              <td>&#36;1/point</td>
+              <td>&#36;1/point</td>
+          </tr>
+          <tr>
+              <td>Minimum Volume (Trade Size)</td>
+              <td>0.01</td>
+              <td>0.01</td>
+              <td>0.01</td>
+              <td>0.01</td>
+          </tr>
+          <tr>
+              <td>Maximum Volume (Trade Size)</td>
+              <td>100</td>
+              <td>100</td>
+              <td>100</td>
+              <td>100</td>
+          </tr>
+          <tr>
+              <td>Minimum Increment (Volume)</td>
+              <td>0.01</td>
+              <td>0.01</td>
+              <td>0.01</td>
+              <td>0.01</td>
+          </tr>
+          <tr>
+              <td>Pip Size</td>
+              <td>0.01</td>
+              <td>0.0001</td>
+              <td>0.0001</td>
+              <td>0.001</td>
+          </tr>
+          <tr>
+              <td>Minimum Spread*</td>
+              <td>0.025%</td>
+              <td>0.018%</td>
+              <td>0.012%</td>
+              <td>0.006%</td>
+          </tr>
+          <tr>
+              <td>Maximum Leverage**</td>
+              <td>100:1</td>
+              <td>100:1</td>
+              <td>100:1</td>
+              <td>100:1</td>
+          </tr>
+      </tbody>
+  </table>
+  <p>* Minimum Spread is a percentage of the underlying market price, and can change over time.</p>
+  <p>** Leverage of 100:1 results in a margin rate of 0.01.</p>
+  <p><strong>Margin Policy:</strong> The forced liquidation level is 50%. Please refer to our <a href='/binary-mt/br_forex/th/margin-policy.html'>Margin Policy</a> for further details.</p>
+    </div>
+  </div>
+
+
+  </div>
+
+
+</div>
+
+</div>
+<div id="footer">
+<div id="footer-menu" class="primary-bg-color">
+<div class="container">
+<div class="gr-row gr-padding-10">
+    <div class="gr-3">
+        <!-- <h4 class="secondary-color">Section 1</h4> -->
+        <ul>
+            <li>
+                <a class="pjaxload" href="/binary-mt/br_forex/th/margin-policy.html">Margin Policy</a>
+            </li>
+        </ul>
+    </div>
+    <div class="gr-3">
+        <!-- <h4 class="secondary-color">Section 2</h4> -->
+        <ul>
+            <li>
+                <a class="pjaxload" href="/binary-mt/br_forex/th/volatility-indices-contract.html">Contract Specifications</a>
+            </li>
+        </ul>
+    </div>
+    <div class="gr-3">
+        <!-- <h4 class="secondary-color">Section 3</h4> -->
+        <ul>
+            <li>
+                <a class="pjaxload" href="/binary-mt/br_forex/th/download-metatrader.html">Download MetaTrader</a>
+            </li>
+        </ul>
+    </div>
+    <div class="gr-3">
+        <!-- <h4 class="secondary-color">Section 4</h4> -->
+        <ul>
+            <li>
+                <a class="pjaxload" href="/binary-mt/br_forex/th/terms-and-conditions.html">Terms and Conditions</a>
+            </li>
+        </ul>
+    </div>
+</div>
+</div>
+</div>
+<div id="footer-regulatory" class="primary-color-dark">
+<div class="container">
+<div class="gr-parent">
+    <div class=" gr-padding-10">
+        <div class="gr-row">
+            <div id="regulatory-text" class="gr-12">
+                High Risk Investment Warning: Trading foreign exchange and/or contracts for differences on margin carries a very high level of risk, and may not be suitable for all investors. There is a possibility that you could sustain a loss in excess of
+                your deposited funds. Accordingly, you should not speculate with capital that you cannot afford to lose. Before deciding to trade the products offered via this website you should carefully consider your financial objectives, needs and level of
+                trading experience. In particular, you should be aware of all the risks associated with trading on margin. Furthermore, the Binary group of companies do not issue advice, recommendations or opinions in relation to acquiring, holding or disposing of
+                any financial products, and all services are provided on an execution only basis.
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div id="ratelimit-error-message">
+<div class="message">
+    You have reached the rate limit of requests per second. To continue, please <a href="javascript:;" id="ratelimit-refresh-link">refresh</a> the page.
+</div>
+</div>
+</div>
+<div id="footer-last" class="primary-bg-color">
+<div class="container">
+<div class="gr-padding-10">
+    <p class="copy-right">
+        © 2016 Binary.com
+    </p>
+</div>
+</div>
+</div>
+</div>

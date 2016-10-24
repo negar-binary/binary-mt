@@ -1,0 +1,161 @@
+<div id="content" class="metatrader-content">
+        <!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-T65M2L"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-T65M2L');</script>
+<!-- End Google Tag Manager -->
+        <div id="page_info" style="display:none;">
+            <title>MetaTrader | mt.binary.com</title>
+            <div id="content_class">metatrader-content</div>
+        </div>
+        
+        <div class="container">
+
+<div id="metatrader">
+    <h1>MetaTrader Accounts Management</h1>
+
+    <p id="errorMsg" class="notice-msg center-text invisible"></p>
+
+    <div id="mt-container" class="gr-row invisible">
+        <div class="gr-3 gr-12-m">
+            <div class="sidebar-left">
+                <ul class="sidebar-nav">
+                    <li id="nav-demo" class="selected"><a href="#demo">Demo Account</a></li>
+                    <li id="nav-financial" class="invisible"><a href="#financial">Financial Account</a></li>
+                    <li id="nav-volatility"><a href="#volatility">Volatility Indices</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="gr-9 gr-12-m">
+            <div id="section-demo" class="section invisible">
+                <h3>Demo Account</h3>
+                <p class="msg-account notice-msg center-text invisible"></p>
+                <form class="form-new-account invisible">
+                    <p>Create a MetaTrader account to trade on the MetaTrader 5 platform.</p>
+                    <div class="gr-row gr-padding-10">
+                        <div class="gr-6 form_label">Account Type</div>
+                        <div class="gr-6 form_label align-start account-type">Demo</div>
+                    </div>
+                    <div class="gr-row gr-padding-10 invisible">
+                        <div class="gr-6 form_label"><label>Leverage</label></div>
+                        <div class="gr-6">
+                            <select class="ddlLeverage">
+                                <option value="1">1</option>
+                                <option value="50">50</option>
+                                <option value="100" selected="selected">100</option>
+                                <option value="200">200</option>
+                                <option value="500">500</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="name-row gr-row gr-padding-10 invisible">
+                        <div class="gr-6 form_label"><label>Your Name</label></div>
+                        <div class="gr-6"><input type="text" class="txtName" maxlength="30" /></div>
+                    </div>
+                    <div class="gr-row gr-padding-10">
+                        <div class="gr-6 form_label"><label>Main Password (trading access)</label></div>
+                        <div class="gr-6">
+                            <input type="password" class="txtMainPass password">
+                            <div><meter id="password-meter" class="password-meter" value="" max="50" min="0" high="20" low="10" optimum="50"></meter></div>
+                            <div class="hint">Minimum of six lower and uppercase letters with numbers</div>
+                        </div>
+                    </div>
+                    <div class="gr-row gr-padding-10">
+                        <div class="gr-6 form_label"><label>Verify Main Password</label></div>
+                        <div class="gr-6"><input type="password" class="txtMainPass2" /></div>
+                    </div>
+                    <div class="gr-row gr-padding-10">
+                        <div class="gr-6 form_label"><label>Investor Password (read-only access)</label></div>
+                        <div class="gr-6"><input type="password" class="txtInvestPass" /></div>
+                    </div>
+                    <div class="gr-row gr-padding-10">
+                        <div class="gr-6 form_label"></div>
+                        <div class="gr-6">
+                            <button class="button">Create</button>
+                            <div class="formMessage center-text"></div>
+                        </div>
+                    </div>
+                </form>
+                <div class="account-details"></div>
+            </div>
+            <div id="section-financial" class="section invisible">
+                <h3>Financial Account</h3>
+                <p class="msg-account notice-msg center-text invisible"></p>
+                <div class="authenticate center-text invisible">
+                    <p>To create an account for MetaTrader, you need to authenticate your Binary account:</p>
+                    <a class="button" target="_blank">
+                        <span>Authenticate your account</span>
+                    </a>
+                </div>
+                <form class="form-new-account invisible"></form>
+                <div class="account-details"></div>
+                <p class="msg-switch-to-deposit notice-msg center-text invisible">To deposit or withdraw from your MetaTrader Account, switch to your Binary.com Real Account.</p>
+                <div class="accordion invisible">
+                    <h3>Deposit to MetaTrader account</h3>
+                    <div>
+                        <form class="form-deposit">
+                            <p>Deposit funds into your MetaTrader account from your Binary account:</p>
+                            <div class="gr-row gr-padding-10">
+                                <div class="gr-6 form_label">Deposit from</div>
+                                <div class="gr-6 form_label align-start binary-login"></div>
+                            </div>
+                            <div class="gr-row gr-padding-10">
+                                <div class="gr-6 form_label">Deposit to</div>
+                                <div class="gr-6 form_label align-start mt-login"></div>
+                            </div>
+                            <div class="gr-row gr-padding-10">
+                                <div class="gr-6 form_label"><label>Amount</label></div>
+                                <div class="gr-6">USD <input type="text" maxlength="10" class="txtAmount" /></div>
+                            </div>
+                            <div class="gr-row gr-padding-10">
+                                <div class="gr-6 form_label"></div>
+                                <div class="gr-6">
+                                    <button class="button">Deposit</button>
+                                    <div class="formMessage center-text"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <h3>Withdraw from MetaTrader account</h3>
+                    <div>
+                        <form class="form-withdrawal">
+                            <p>Withdraw funds from your MetaTrader account into your Binary account:</p>
+                            <div class="gr-row gr-padding-10">
+                                <div class="gr-6 form_label">Withdraw from</div>
+                                <div class="gr-6 form_label align-start mt-login"></div>
+                            </div>
+                            <div class="gr-row gr-padding-10">
+                                <div class="gr-6 form_label">Withdraw to</div>
+                                <div class="gr-6 form_label align-start binary-login"></div>
+                            </div>
+                            <div class="gr-row gr-padding-10">
+                                <div class="gr-6 form_label"><label>MetaTrader Main Password</label></div>
+                                <div class="gr-6"><input type="password" class="txtMainPass" /></div>
+                            </div>
+                            <div class="gr-row gr-padding-10">
+                                <div class="gr-6 form_label"><label>Amount</label></div>
+                                <div class="gr-6">USD <input type="text" maxlength="10" class="txtAmount" /></div>
+                            </div>
+                            <div class="gr-row gr-padding-10">
+                                <div class="gr-6 form_label"></div>
+                                <div class="gr-6">
+                                    <button class="button">Withdraw</button>
+                                    <div class="formMessage center-text"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div id="section-volatility" class="section invisible"></div>
+        </div>
+    </div>
+
+    <p id="errorMsg" class="notice-msg center-text invisible"></p>
+
+    <div id="loading"></div>
+</div>
