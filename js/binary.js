@@ -17739,6 +17739,26 @@ pjax_config_page("/404", function() {
     };
 });
 
+pjax_config_page("/terms-and-conditions", function() {
+    return {
+        onLoad: function() {
+            var hash;
+            function updateTab() {
+                hash = /^#(risk-tab|legal-tab)$/.test(window.location.hash) ? window.location.hash : '#legal-tab';
+                $(hash).addClass('active')
+                       .find('a').addClass('a-active');
+                $('.menu-has-sub-item div.toggle-content').addClass('invisible');
+                $(hash + '-tab').removeClass('invisible');
+            }
+            $(window).on('hashchange', function() {
+                updateTab();
+            });
+            updateTab();
+            $('.content-tab-container').removeClass('invisible');
+        }
+    };
+});
+
 ;pjax_config_page("endpoint", function(){
     return {
         onLoad: function() {
