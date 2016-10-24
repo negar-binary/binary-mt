@@ -17748,7 +17748,7 @@ pjax_config_page("/terms-and-conditions", function() {
                 $(hash).addClass('active')
                        .find('a').addClass('a-active');
                 $('.menu-has-sub-item div.toggle-content').addClass('invisible');
-                $(hash + '-tab').removeClass('invisible');
+                $(hash + '-content').removeClass('invisible');
             }
             $(window).on('hashchange', function() {
                 updateTab();
