@@ -387,11 +387,8 @@ div ul li.no-bullet {
 #header select#client_loginid option[disabled=disabled] {
   background-color: #F2F2F2;
 }
-#header #binary-logo-text {
+#header .binary-logo-text {
   margin-top: 10px;
-}
-#header #binary-logo-text img {
-  width: 90%;
 }
 #header #client-logged-out {
   text-align: right;
