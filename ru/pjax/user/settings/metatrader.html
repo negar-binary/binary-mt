@@ -25,7 +25,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <div class="sidebar-left">
                 <ul class="sidebar-nav">
                     <li id="nav-demo" class="selected"><a href="#demo">Demo Account</a></li>
-                    <li id="nav-financial" class="invisible"><a href="#financial">Financial Account</a></li>
+                    <li id="nav-financial"><a href="#financial">Financial Account</a></li>
                     <li id="nav-volatility"><a href="#volatility">Volatility Indices</a></li>
                 </ul>
             </div>
@@ -60,8 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                         <div class="gr-6 form_label"><label>Main Password (trading access)</label></div>
                         <div class="gr-6">
                             <input type="password" class="txtMainPass password">
-                            <div><meter id="password-meter" class="password-meter" value="" max="50" min="0" high="20" low="10" optimum="50"></meter></div>
-                            <div class="hint">Minimum of six lower and uppercase letters with numbers</div>
+                            <div class="hint">Minimum of eight lower and uppercase letters with numbers</div>
                         </div>
                     </div>
                     <div class="gr-row gr-padding-10">
@@ -85,11 +84,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <div id="section-financial" class="section invisible">
                 <h3>Financial Account</h3>
                 <p class="msg-account notice-msg center-text invisible"></p>
-                <div class="authenticate center-text invisible">
-                    <p>To create an account for MetaTrader, you need to authenticate your Binary account:</p>
-                    <a class="button" target="_blank">
-                        <span>Authenticate your account</span>
-                    </a>
+                <div class="authenticate invisible">
+                    <p>In order to create an account for MetaTrader, you need to authenticate your Binary account.</p>
+                    <p>To authenticate your account, kindly email the following to <a href="mailto:support@binary.com">support@binary.com</a></p>
+                    <ul class="bullet">
+                        <li>A scanned copy of your passport, driving licence (provisional or full) or identity card, showing your name and date of birth.</li>
+                        <li>A scanned copy of a utility bill or bank statement (no more than 3 months old).</li>
+                    </ul>
                 </div>
                 <form class="form-new-account invisible"></form>
                 <div class="account-details"></div>

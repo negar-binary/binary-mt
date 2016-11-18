@@ -16184,6 +16184,7 @@ Client.prototype = {
         this.set_storage_value('is_virtual', TUser.get().is_virtual);
         this.check_storage_values();
         page.contents.activate_by_client_type();
+        page.contents.activate_by_login();
         page.contents.topbar_message_visibility();
     },
     response_mt5_login_list: function(response) {
@@ -16444,12 +16445,31 @@ Header.prototype = {
     on_unload: function() {
         this.menu.reset();
     },
+    animate_disappear: function(element) {
+        element.animate({'opacity':0}, 100, function() {
+            element.css('visibility', 'hidden');
+        });
+    },
+    animate_appear: function(element) {
+        element.css('visibility', 'visible').animate({'opacity': 1}, 100);
+    },
     show_or_hide_login_form: function() {
         if (!this.user.is_logged_in || !this.client.is_logged_in) return;
-        var $login_options = $('#client_loginid');
+        var all_accounts = $('#all-accounts');
+        var that = this;
+        $('.nav-menu').unbind('click').on('click', function(event) {
+            event.stopPropagation();
+            if (all_accounts.css('opacity') == 1) {
+                that.animate_disappear(all_accounts);
+            } else {
+                that.animate_appear(all_accounts);
+            }
+        });
+        $(document).unbind('click').on('click', function() {
+            that.animate_disappear(all_accounts);
+        });
+        var loginid_select = '';
         var loginid_array = this.user.loginid_array;
-        $login_options.html('');
-
         for (var i=0; i < loginid_array.length; i++) {
             var login = loginid_array[i];
             if (login.disabled) continue;
@@ -16461,13 +16481,18 @@ Header.prototype = {
                 else if (login.non_financial) type = 'Gaming';
                 else                          type = 'Real';
             }
+            type = type + ' Account';
 
-            $login_options.append($('<option/>', {
-                value: curr_id,
-                selected: curr_id == this.client.loginid,
-                text: template('[_1] Account ([_2])', [type, curr_id]),
-            }));
+            // default account
+            if (curr_id == this.client.loginid) {
+                $('#client-logged-in .account-type').html(text.localize(type));
+                $('#client-logged-in .account-id').html(curr_id);
+            } else {
+                loginid_select += '<a href="#" value="' + curr_id + '"><li>' + text.localize(type) + '<div>' + curr_id + '</div>' +
+                                  '</li></a>' + '<div class="separator-line-thin-gray"></div>';
+            }
         }
+        $(".login-id-list").html(loginid_select);
     },
     register_dynamic_links: function() {
         var logged_in_url = page.url.url_for(this.client.is_logged_in ? 'user/settings/metatrader' : '');
@@ -16616,6 +16641,11 @@ Contents.prototype = {
             $('#topbar').addClass('primary-color-dark');
         }
     },
+    activate_by_login: function() {
+        if(this.client.is_logged_in) {
+            $('.client_logged_in').removeClass('invisible');
+        }
+    },
     update_content_class: function() {
         //This is required for our css to work.
         $('#content').removeClass();
@@ -16702,9 +16732,10 @@ Page.prototype = {
     },
     on_change_loginid: function() {
         var that = this;
-        $('#client_loginid').on('change', function() {
+        $('.login-id-list a').on('click', function(e) {
+            e.preventDefault();
             $(this).attr('disabled','disabled');
-            that.switch_loginid($(this).val());
+            that.switch_loginid($(this).attr('value'));
         });
     },
     switch_loginid: function(loginid) {
@@ -16725,7 +16756,7 @@ Page.prototype = {
         // set local storage
         GTM.set_login_flag();
         localStorage.setItem('active_loginid', loginid);
-        $('#client_loginid').removeAttr('disabled');
+        $('.login-id-list a').removeAttr('disabled');
         page.reload();
     },
     localize_for: function(language) {
@@ -17058,11 +17089,8 @@ if (typeof module !== 'undefined') {
 // Parameters:
 // 1) container - a jQuery object
 //////////////////////////////////////////////////////////////////
-function showLoadingImage(container)
-{
-    var image_link = page.settings.get('image_link');
-
-    container.empty().append('<div id="std_loading_img"><p>'+text.localize('loading...')+'</p><img src="'+image_link['hourglass']+'" /></div>');
+function showLoadingImage(container) {
+    container.empty().append('<div class="barspinner dark"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>');
 }
 
 function showLocalTimeOnHover(s) {
@@ -17088,6 +17116,15 @@ function template(string, content) {
     });
 }
 
+function objectNotEmpty(obj) {
+    if (obj && obj instanceof Object) {
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key)) return true;
+        }
+    }
+    return false;
+}
+
 function parseLoginIDList(string) {
     if (!string) return [];
     return string.split('+').sort().map(function(str) {
@@ -17108,6 +17145,7 @@ if (typeof module !== 'undefined') {
     module.exports = {
         template: template,
         parseLoginIDList: parseLoginIDList,
+        objectNotEmpty: objectNotEmpty,
     };
 }
 
@@ -17155,84 +17193,6 @@ onUnload.queue(function () {
     page.on_unload();
 });
 
-function formEffects() {
-    var select_focus_event = function () {
-        $(this)
-            .addClass('focus')
-            .siblings().addClass('focus')
-            .parents('fieldset').addClass('focus');
-    };
-    var select_blur_event = function () {
-        $(this)
-            .removeClass('focus')
-            .siblings().removeClass('focus')
-            .parents('fieldset').removeClass('focus');
-    };
-    var input_focus_event = function () {
-        $(this)
-            .parent('div').addClass('focus')
-            .parents('fieldset').addClass('focus');
-    };
-    var input_blur_event = function () {
-        $(this)
-            .parent('div').removeClass('focus')
-            .parents('fieldset').removeClass('focus');
-    };
-
-    this.set = function (jqObject) {
-        jqObject
-            .delegate('select', 'focus', select_focus_event)
-            .delegate('select', 'blur', select_blur_event);
-
-        jqObject
-            .delegate('input[type=text],input[type=password],textarea', 'focus', input_focus_event)
-            .delegate('input[type=text],input[type=password],textarea', 'blur', input_blur_event);
-    };
-}
-
-function add_click_effect_to_button() {
-    var prefix = function (class_name) {
-        var class_names = class_name.split(/\s+/);
-        var _prefix = 'button';
-        var cn = class_names.shift();
-
-        while (cn) {
-            if (cn && cn != _prefix && !cn.match(/-focus|-hover/)) {
-                _prefix = cn;
-                break;
-            }
-            cn = class_names.shift();
-        }
-
-        return _prefix;
-    };
-
-    var remove_button_class = function (button, class_name) {
-        button.removeClass(class_name).children('.button').removeClass(class_name).end().parent('.button').removeClass(class_name);
-    };
-    var add_button_class = function (button, class_name) {
-        button.addClass(class_name).children('.button').addClass(class_name).end().parent('.button').addClass(class_name);
-    };
-
-    $('#content,#popup')
-        .delegate('.button', 'mousedown', function () {
-            var class_name = prefix(this.className) + '-focus';
-            add_button_class($(this), class_name);
-        })
-        .delegate('.button', 'mouseup', function () {
-            var class_name = prefix(this.className) + '-focus';
-            remove_button_class($(this), class_name);
-        })
-        .delegate('.button', 'mouseover', function () {
-            var class_name = prefix(this.className) + '-hover';
-            add_button_class($(this), class_name);
-        })
-        .delegate('.button', 'mouseout', function () {
-            var class_name = prefix(this.className) + '-hover';
-            remove_button_class($(this), class_name);
-        });
-}
-
 var make_mobile_menu = function () {
     if ($('#mobile-menu-container').is(':visible')) {
         $('#mobile-menu').mmenu({
@@ -17259,12 +17219,7 @@ onLoad.queue(function () {
         }
     );
 
-    add_click_effect_to_button();
     make_mobile_menu();
-
-    // attach the class to account form's div/fieldset for CSS visual effects
-    var objFormEffect = new formEffects();
-    objFormEffect.set($('form.formObject'));
 
     var i = window.location.href.split('#');
     if (i.length != 2) return;
@@ -17485,182 +17440,6 @@ function addComma(num){
     return num.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-;/* ************************************************************
-Created: 20060120
-Author:  Steve Moitozo <god at zilla dot us> -- geekwisdom.com
-Description: This is a quick and dirty password quality meter
-     written in JavaScript so that the password does
-     not pass over the network.
-License: MIT License (see below)
-Modified: 20060620 - added MIT License
-Modified: 20061111 - corrected regex for letters and numbers
-                     Thanks to Zack Smith -- zacksmithdesign.com
----------------------------------------------------------------
-Copyright (c) 2006 Steve Moitozo <god at zilla dot us>
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without
-restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or
-sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following
-conditions:
-   The above copyright notice and this permission notice shall
-be included in all copies or substantial portions of the
-Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
-KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
-OR OTHER DEALINGS IN THE SOFTWARE.
----------------------------------------------------------------
-Password Strength Factors and Weightings
-password length:
-level 0 (3 point): less than 4 characters
-level 1 (6 points): between 5 and 7 characters
-level 2 (12 points): between 8 and 15 characters
-level 3 (18 points): 16 or more characters
-letters:
-level 0 (0 points): no letters
-level 1 (5 points): all letters are lower case
-level 2 (7 points): letters are mixed case
-numbers:
-level 0 (0 points): no numbers exist
-level 1 (5 points): one number exists
-level 1 (7 points): 3 or more numbers exists
-special characters:
-level 0 (0 points): no special characters
-level 1 (5 points): one special character exists
-level 2 (10 points): more than one special character exists
-combinatons:
-level 0 (1 points): letters and numbers exist
-level 1 (1 points): mixed case letters
-level 1 (2 points): letters, numbers and special characters
-          exist
-level 1 (2 points): mixed case letters, numbers and special
-          characters exist
-NOTE: Because I suck at regex the code might need work
-NOTE: Instead of putting out all the logging information,
-    the score, and the verdict it would be nicer to stretch
-    a graphic as a method of presenting a visual strength
-    guage.
-************************************************************ */
-function testPassword(passwd)
-{
-    var intScore   = 0;
-    var strVerdict = "weak";
-    var strLog     = "";
-
-    // PASSWORD LENGTH
-    if (passwd.length<5)                         // length 4 or less
-    {
-      intScore = (intScore+3);
-      strLog   = strLog + "3 points for length (" + passwd.length + ")\n";
-    }
-    else if (passwd.length>4 && passwd.length<8) // length between 5 and 7
-    {
-      intScore = (intScore+6);
-      strLog   = strLog + "6 points for length (" + passwd.length + ")\n";
-    }
-    else if (passwd.length>7 && passwd.length<16)// length between 8 and 15
-    {
-      intScore = (intScore+12);
-      strLog   = strLog + "12 points for length (" + passwd.length + ")\n";
-    }
-    else if (passwd.length>15)                    // length 16 or more
-    {
-      intScore = (intScore+18);
-      strLog   = strLog + "18 point for length (" + passwd.length + ")\n";
-    }
-
-
-    // LETTERS (Not exactly implemented as dictacted above because of my limited understanding of Regex)
-    if (passwd.match(/[a-z]/))                              // [verified] at least one lower case letter
-    {
-      intScore = (intScore+1);
-      strLog   = strLog + "1 point for at least one lower case char\n";
-    }
-
-    if (passwd.match(/[A-Z]/))                              // [verified] at least one upper case letter
-    {
-      intScore = (intScore+5);
-      strLog   = strLog + "5 points for at least one upper case char\n";
-    }
-
-    // NUMBERS
-    if (passwd.match(/\d+/))                                 // [verified] at least one number
-    {
-      intScore = (intScore+5);
-      strLog   = strLog + "5 points for at least one number\n";
-    }
-
-    if (passwd.match(/(.*[0-9].*[0-9].*[0-9])/))             // [verified] at least three numbers
-    {
-      intScore = (intScore+5);
-      strLog   = strLog + "5 points for at least three numbers\n";
-    }
-
-
-    // SPECIAL CHAR
-    if (passwd.match(/.[!,@,#,$,%,^,&,*,?,_,~]/))            // [verified] at least one special character
-    {
-      intScore = (intScore+5);
-      strLog   = strLog + "5 points for at least one special char\n";
-    }
-
-                   // [verified] at least two special characters
-    if (passwd.match(/(.*[!,@,#,$,%,^,&,*,?,_,~].*[!,@,#,$,%,^,&,*,?,_,~])/))
-    {
-      intScore = (intScore+5);
-      strLog   = strLog + "5 points for at least two special chars\n";
-    }
-
-
-    // COMBOS
-    if (passwd.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/))        // [verified] both upper and lower case
-    {
-      intScore = (intScore+2);
-      strLog   = strLog + "2 combo points for upper and lower letters\n";
-    }
-
-    if (passwd.match(/([a-zA-Z])/) && passwd.match(/([0-9])/)) // [verified] both letters and numbers
-    {
-      intScore = (intScore+2);
-      strLog   = strLog + "2 combo points for letters and numbers\n";
-    }
-
-                  // [verified] letters, numbers, and special characters
-    if (passwd.match(/([a-zA-Z0-9].*[!,@,#,$,%,^,&,*,?,_,~])|([!,@,#,$,%,^,&,*,?,_,~].*[a-zA-Z0-9])/))
-    {
-      intScore = (intScore+2);
-      strLog   = strLog + "2 combo points for letters, numbers and special chars\n";
-    }
-
-
-    if(intScore < 10)
-    {
-       strVerdict = text.localize("Password is weak");
-    }
-    else if (intScore > 9 && intScore < 20)
-    {
-       strVerdict = text.localize("Password is moderate");
-    }
-    else if (intScore > 19)
-    {
-       strVerdict = text.localize("Password is strong");
-    }
-    else
-    {
-       strVerdict = text.localize("Password is very strong");
-    }
-
-  var array = [intScore, strVerdict];
-  return array;
-}
-
 ;var SessionDurationLimit = (function() {
     'use strict';
 
@@ -17744,7 +17523,7 @@ pjax_config_page("/terms-and-conditions", function() {
         onLoad: function() {
             var hash;
             function updateTab() {
-                hash = /^#(risk-tab|legal-tab)$/.test(window.location.hash) ? window.location.hash : '#legal-tab';
+                hash = /^#(risk|legal|order)-tab$/.test(window.location.hash) ? window.location.hash : '#legal-tab';
                 //remove active class and hide all content
                 $('#legal-menu li').removeClass('active a-active');
                 $('.menu-has-sub-item div.toggle-content').addClass('invisible');
@@ -18032,6 +17811,168 @@ function BinarySocketClass() {
 
 var BinarySocket = new BinarySocketClass();
 
+;var FinancialAssessmentws = (function(){
+   "use strict";
+
+    var init = function(){
+        if (checkIsVirtual()) return;
+        LocalizeText();
+        $("#assessment_form").on("submit",function(event) {
+            event.preventDefault();
+            submitForm();
+            return false;
+        });
+        BinarySocket.send({get_financial_assessment : 1});
+    };
+
+    // For translating strings
+    var LocalizeText = function(){
+        $("#heading").text(text.localize($("#heading").text()));
+        $('#heading_risk').text(text.localize($("#heading_risk").text()));
+        $('#high_risk_classification').text(text.localize($('#high_risk_classification').text()));
+        document.getElementsByTagName('legend')[0].innerHTML = text.localize(document.getElementsByTagName('legend')[0].innerHTML);
+        if (document.getElementsByTagName('legend')[1]) document.getElementsByTagName('legend')[1].innerHTML = text.localize(document.getElementsByTagName('legend')[1].innerHTML);
+        $("#assessment_form label").each(function(){
+            var ele = $(this);
+            ele.text(text.localize(ele.text()));
+        });
+        $("#assessment_form option").each(function(){
+            var ele = $(this);
+            ele.text(text.localize(ele.text()));
+        });
+        $("#warning").text(text.localize($("#warning").text()));
+        $("#submit").text(text.localize($("#submit").text()));
+    };
+
+    var submitForm = function(){
+        if(!validateForm()){
+            return;
+        }
+        $('#submit').attr('disabled', 'disabled');
+        var data = {'set_financial_assessment' : 1};
+        showLoadingImage($('#form_message'));
+        $('#assessment_form select').each(function(){
+            data[$(this).attr("id")] = $(this).val();
+        });
+        BinarySocket.send(data);
+    };
+
+    var validateForm = function(){
+        var isValid = true,
+            errors = {};
+        $('.errorfield').each(function() { $(this).text(''); });
+        $('#assessment_form select').each(function(){
+            if(!$(this).val()){
+                isValid = false;
+                errors[$(this).attr("id")] = text.localize('Please select a value');
+            }
+        });
+        if(!isValid){
+            displayErrors(errors);
+        }
+
+        return isValid;
+    };
+
+    var showLoadingImg = function(){
+        showLoadingImage($('<div/>', {id: 'loading', class: 'center-text'}).insertAfter('#heading'));
+        $("#assessment_form").addClass('invisible');
+    };
+
+    var hideLoadingImg = function(show_form){
+        $("#loading").remove();
+        if(typeof show_form === 'undefined'){
+            show_form = true;
+        }
+        if(show_form)
+            $("#assessment_form").removeClass('invisible');
+    };
+
+    var responseGetAssessment = function(response){
+        hideLoadingImg();
+        for(var key in response.get_financial_assessment){
+            if(key){
+                var val = response.get_financial_assessment[key];
+                $("#"+key).val(val);
+            }
+        }
+    };
+
+    var displayErrors = function(errors){
+        var id;
+        $(".errorfield").each(function(){$(this).text('');});
+        for(var key in errors){
+            if(key){
+                var error = errors[key];
+                $("#error"+key).text(text.localize(error));
+                if (!id) id = key;
+            }
+        }
+        hideLoadingImg();
+        $('html, body').animate({
+            scrollTop: $("#"+id).offset().top
+        }, 'fast');
+    };
+
+    var apiResponse = function(response){
+        if (checkIsVirtual()) return;
+        if (response.msg_type === 'get_financial_assessment'){
+            responseGetAssessment(response);
+        } else if (response.msg_type === 'set_financial_assessment') {
+            $('#submit').removeAttr('disabled');
+            if ('error' in response) {
+                showFormMessage('Sorry, an error occurred while processing your request.', false);
+                displayErrors(response.error.details);
+            } else {
+                showFormMessage('Your settings have been updated successfully.', true);
+            }
+        }
+    };
+
+    var checkIsVirtual = function(){
+        if(page.client.is_virtual()) {
+            $("#assessment_form").addClass('invisible');
+            $('#response_on_success').addClass('notice-msg center-text').removeClass('invisible').text(text.localize('This feature is not relevant to virtual-money accounts.'));
+            hideLoadingImg(false);
+            return true;
+        }
+        return false;
+    };
+
+    var showFormMessage = function(msg, isSuccess) {
+        $('#form_message')
+            .attr('class', isSuccess ? 'success-msg' : 'errorfield')
+            .html(isSuccess ? '<ul class="checked" style="display: inline-block;"><li>' + text.localize(msg) + '</li></ul>' : text.localize(msg))
+            .css('display', 'block')
+            .delay(5000)
+            .fadeOut(1000);
+        if (isSuccess) {
+            setTimeout(function() { window.location.href = page.url.url_for('user/settings/metatrader', '#financial'); }, 5000);
+        }
+    };
+
+    var onLoad = function() {
+        BinarySocket.init({
+            onmessage: function(msg) {
+                var response = JSON.parse(msg.data);
+                if (response) {
+                    FinancialAssessmentws.apiResponse(response);
+                }
+            }
+        });
+        showLoadingImage($('<div/>', {id: 'loading', class: 'center-text'}).insertAfter('#heading'));
+        FinancialAssessmentws.init();
+    };
+
+    return {
+        init : init,
+        apiResponse : apiResponse,
+        submitForm: submitForm,
+        LocalizeText: LocalizeText,
+        onLoad: onLoad,
+    };
+}());
+
 ;var MetaTrader = (function(){
     'use strict';
 
@@ -18052,8 +17993,8 @@ var BinarySocket = new BinarySocketClass();
         var errMsg = validateRequired(password);
 
         if (!errMsg) {
-            if (password.length < 6 || password.length > 25) {
-                errMsg = Content.errorMessage('range', '6-25');
+            if (password.length < 8 || password.length > 25) {
+                errMsg = Content.errorMessage('range', '8-25');
             } else if (!/[0-9]+/.test(password) || !/[A-Z]+/.test(password) || !/[a-z]+/.test(password)) {
                 errMsg = text.localize('Password should have lower and uppercase letters with numbers.');
             } else if (!/^[!-~]+$/.test(password)) {
@@ -18149,6 +18090,10 @@ var BinarySocket = new BinarySocketClass();
         BinarySocket.send({'get_account_status': 1});
     };
 
+    var requestFinancialAssessment = function() {
+        BinarySocket.send({'get_financial_assessment': 1});
+    };
+
     var requestLandingCompany = function(residence) {
         residence = residence || Cookies.get('residence');
         if(residence && !lcRequested) {
@@ -18176,6 +18121,9 @@ var BinarySocket = new BinarySocketClass();
                 break;
             case 'get_account_status':
                 MetaTraderUI.responseAccountStatus(response);
+                break;
+            case 'get_financial_assessment':
+                MetaTraderUI.responseFinancialAssessment(response);
                 break;
             case 'mt5_login_list':
                 if(response.req_id == 1) {
@@ -18209,6 +18157,7 @@ var BinarySocket = new BinarySocketClass();
         requestSend          : requestSend,
         requestAccountStatus : requestAccountStatus,
         requestLandingCompany: requestLandingCompany,
+        requestFinancialAssessment: requestFinancialAssessment,
     };
 }());
 
@@ -18220,6 +18169,7 @@ var BinarySocket = new BinarySocketClass();
         $form,
         isValid,
         isAuthenticated,
+        isAssessmentDone,
         hasGamingCompany,
         hasFinancialCompany,
         currency,
@@ -18258,6 +18208,7 @@ var BinarySocket = new BinarySocketClass();
             if(hasGamingCompany) {
                 $('#section-financial').contents().clone().appendTo('#section-volatility');
                 $('#section-volatility > h3').text(text.localize('Volatility Indices Account'));
+                $('#section-volatility > .authenticate').remove();
             } else {
                 hideAccount('volatility');
             }
@@ -18284,21 +18235,24 @@ var BinarySocket = new BinarySocketClass();
 
     var displayAccount = function(accType) {
         findInSection(accType, '.form-new-account').addClass(hiddenClass);
+        var mtWebURL = 'https://trade.mql5.com/trade?servers=Binary.com-Server&amp;trade_server=Binary.com-Server&amp;';
         var $details = $('<div/>').append($(
             makeTextRow('Login', mt5Accounts[accType].login) +
             makeTextRow('Balance', currency + ' ' + mt5Accounts[accType].balance, 'balance') +
             makeTextRow('Name', mt5Accounts[accType].name) +
             // makeTextRow('Leverage', mt5Accounts[accType].leverage)
-            makeTextRow('', text.localize('Start trading with your MetaTrader Account') +
-                ' <a class="button pjaxload" href="' + page.url.url_for('download-metatrader') + '" style="margin:0 20px;">' +
-                    '<span>' + text.localize('Download MetaTrader') + '</span></a>')
+            makeTextRow('', text.localize('Start trading with your MetaTrader Account:') + '<div class="center-text">' +
+                '<a class="button pjaxload" href="' + page.url.url_for('download-metatrader') + '" style="margin:10px 20px; display:inline-block;">' +
+                    '<span>' + text.localize('Download MetaTrader') + '</span></a>' +
+                '<a class="button" href="' + (mtWebURL + 'login=' + mt5Accounts[accType].login) + '" target="_blank">' +
+                    '<span>' + text.localize('MetaTrader Web Platform') + '</span></a></div>')
         ));
         findInSection(accType, '.account-details').html($details.html());
 
         // display deposit/withdrawal form
         var $accordion = findInSection(accType, '.accordion');
         if(/financial|volatility/.test(accType)) {
-            findInSection(accType, '.msg-account, .authenticate').addClass(hiddenClass);
+            findInSection(accType, '.authenticate').addClass(hiddenClass);
             if(page.client.is_virtual()) {
                 $accordion.addClass(hiddenClass);
                 $('.msg-switch-to-deposit').removeClass(hiddenClass);
@@ -18312,10 +18266,13 @@ var BinarySocket = new BinarySocketClass();
                     $form.find('button').unbind('click').click(function(e) {
                         e.preventDefault();
                         e.stopPropagation();
-                        if(/deposit/.test(formClass)) {
-                            depositToMTAccount(accType);
-                        } else {
-                            withdrawFromMTAccount(accType);
+                        if (!$(this).attr('disabled')) {
+                            $(this).addClass('button-disabled').attr('disabled', 'disabled');
+                            if(/deposit/.test(formClass)) {
+                                depositToMTAccount(accType);
+                            } else {
+                                withdrawFromMTAccount(accType);
+                            }
                         }
                     });
                 });
@@ -18435,7 +18392,6 @@ var BinarySocket = new BinarySocketClass();
                 $form = findInSection(accType, '.form-new-account');
                 $form.removeClass(hiddenClass);
                 $form.find('.name-row').removeClass(hiddenClass);
-                passwordMeter();
             }
         } else if(/financial|volatility/.test(accType)) {
             if(!mt5Accounts.hasOwnProperty(accType)) {
@@ -18453,11 +18409,12 @@ var BinarySocket = new BinarySocketClass();
                 } else {
                     if(/financial/.test(accType) && !isAuthenticated) {
                         MetaTraderData.requestAccountStatus();
+                    } else if(/financial/.test(accType) && !isAssessmentDone) {
+                        MetaTraderData.requestFinancialAssessment();
                     } else {
                         $form = findInSection(accType, '.form-new-account');
                         $form.find('.account-type').text(text.localize(accType.charAt(0).toUpperCase() + accType.slice(1)));
                         $form.find('.name-row').remove();
-                        passwordMeter();
                         $form.removeClass(hiddenClass);
                     }
                 }
@@ -18500,8 +18457,22 @@ var BinarySocket = new BinarySocketClass();
             isAuthenticated = true;
             manageTabContents();
         } else if(!page.client.is_virtual()) {
-            $('.authenticate a').attr('href', page.url.url_for('/user/authenticatews', '', true));
             $('.authenticate').removeClass(hiddenClass);
+        }
+    };
+
+    var responseFinancialAssessment = function(response) {
+        if(response.hasOwnProperty('error')) {
+            return showPageError(response.error.message, false);
+        }
+
+        if(objectNotEmpty(response.get_financial_assessment)) {
+            isAssessmentDone = true;
+            manageTabContents();
+        } else if(!page.client.is_virtual()) {
+            findInSection('financial', '.msg-account').html(
+                text.localize('To create a financial account for MetaTrader, please first complete the <a href="[_1]">Financial Assessment</a>.', [page.url.url_for('user/settings/assessmentws')])
+            ).removeClass(hiddenClass);
         }
     };
 
@@ -18532,6 +18503,7 @@ var BinarySocket = new BinarySocketClass();
         }
 
         var accType = MetaTrader.getAccountType(response.mt5_get_settings.group);
+        mt5Logins[response.mt5_get_settings.login] = accType;
         mt5Accounts[accType] = response.mt5_get_settings;
         displayTab();
         displayAccount(accType);
@@ -18544,6 +18516,8 @@ var BinarySocket = new BinarySocketClass();
 
         var new_login = response.mt5_new_account.login,
             new_type  = response.mt5_new_account.account_type;
+        if (new_type === 'gaming') new_type = 'volatility';
+        mt5Logins[new_login] = new_type;
         MetaTraderData.requestLoginDetails(new_login);
         showAccountMessage(new_type, text.localize('Congratulations! Your account has been created.'));
 
@@ -18571,6 +18545,7 @@ var BinarySocket = new BinarySocketClass();
 
     var responseDeposit = function(response) {
         $form = findInSection(mt5Logins[response.echo_req.to_mt5], '.form-deposit');
+        enableButton($form.find('button'));
         if(response.hasOwnProperty('error')) {
             return showFormMessage(response.error.message, false);
         }
@@ -18587,6 +18562,7 @@ var BinarySocket = new BinarySocketClass();
 
     var responseWithdrawal = function(response) {
         $form = findInSection(mt5Logins[response.echo_req.from_mt5], '.form-withdrawal');
+        enableButton($form.find('button'));
         if(response.hasOwnProperty('error')) {
             return showFormMessage(response.error.message, false);
         }
@@ -18605,6 +18581,7 @@ var BinarySocket = new BinarySocketClass();
         var accType = mt5Logins[response.echo_req.login];
         $form = findInSection(accType, '.form-withdrawal');
         if(response.hasOwnProperty('error')) {
+            enableButton($form.find('button'));
             return showError('.txtMainPass', response.error.message);
         }
 
@@ -18616,19 +18593,6 @@ var BinarySocket = new BinarySocketClass();
     // --------------------------
     // ----- Form Functions -----
     // --------------------------
-    var passwordMeter = function() {
-        if (isIE()) {
-            $form.find('.password-meter').remove();
-            return;
-        }
-
-        if($form.find('meter').length !== 0) {
-            $form.find('.password').unbind('input').on('input', function() {
-                $form.find('.password-meter').attr('value', testPassword($form.find('.password').val())[0]);
-            });
-        }
-    };
-
     var formValidate = function(formName) {
         clearError();
         isValid = true;
@@ -18686,6 +18650,9 @@ var BinarySocket = new BinarySocketClass();
             }
         }
 
+        if (!isValid) {
+            enableButton($form.find('button'));
+        }
         return isValid;
     };
 
@@ -18724,6 +18691,10 @@ var BinarySocket = new BinarySocketClass();
         findInSection(accType, '.msg-account').html(message).removeClass(hiddenClass);
     };
 
+    var enableButton = function($btn) {
+        $btn.removeClass('button-disabled').removeAttr('disabled');
+    };
+
     return {
         init: init,
         responseLoginList      : responseLoginList,
@@ -18734,6 +18705,7 @@ var BinarySocket = new BinarySocketClass();
         responsePasswordCheck  : responsePasswordCheck,
         responseAccountStatus  : responseAccountStatus,
         responseLandingCompany : responseLandingCompany,
+        responseFinancialAssessment: responseFinancialAssessment,
     };
 }());
 
@@ -18874,7 +18846,7 @@ pjax_config_page_require_auth("tnc_approvalws", function() {
         var view = format_money(currency, amount);
 
         TUser.get().balance = balance.balance;
-        $("#balance").text(view);
+        $('.topMenuBalance').text(view).css('visibility', 'visible');
     }
 
     return {
@@ -18886,6 +18858,14 @@ pjax_config_page_require_auth("tnc_approvalws", function() {
     return {
         onLoad: function() {
             MetaTraderUI.init();
+        }
+    };
+});
+
+pjax_config_page_require_auth("user/settings/assessmentws", function() {
+    return {
+        onLoad: function() {
+            FinancialAssessmentws.onLoad();
         }
     };
 });

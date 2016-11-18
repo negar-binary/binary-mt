@@ -54,14 +54,14 @@
           <link rel="alternate" href="/binary-mt/zh_cn/volatility-indices-contract.html" hreflang="ZH_CN" /> 
           <link rel="alternate" href="/binary-mt/zh_tw/volatility-indices-contract.html" hreflang="ZH_TW" /> 
         
-         <link rel="stylesheet" href="/binary-mt/css/binary.min.css?xy2n9uui">
-         <link rel="stylesheet" href="https://style.binary.com/binary.css?xy2n9uui">
+         <link rel="stylesheet" href="/binary-mt/css/binary.min.css?x13ax7jy">
+         <link rel="stylesheet" href="https://style.binary.com/binary.css?x13ax7jy">
         
         <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.includes,String.prototype.includes&unknown=polyfill"></script>
 <script>
     //A global variable required to initialize Page object.
-    window.page_params = {settings: {"image_link":{"hourglass":"/binary-mt/images/common/hourglass_1.gif"},"valid_loginids":"MX|MF|VRTC|MLT|CR|FOG|VRTJ|JP"}};
-</script>  <script src='/binary-mt/js/binary.js?xy2n9uui' defer async></script>
+    window.page_params = {settings: {"valid_loginids":"MX|MF|VRTC|MLT|CR|FOG|VRTJ|JP","image_link":{"hourglass":"/binary-mt/images/common/hourglass_1.gif"}}};
+</script>  <script src='/binary-mt/js/binary.js?x13ax7jy' defer async></script>
     </head>
 
 
@@ -77,7 +77,9 @@
                 </div>
                 <div class='gr-6 gr-7-t gr-12-p gr-12-m' id='topbar-info'>
                     <div class="gr-row">
-                        <div class='gr-12 gr-7-m no-underline' id="gmt-clock" data-balloon-pos="down"></div>
+                        <div class='gr-12 gr-7-m align-end'>
+                            <span class="no-underline" id="gmt-clock" data-balloon-pos="down"></span>
+                        </div>
                         <!-- <div class='gr-3 gr-hide-m' id='contact-us'>
                             <a class="pjaxload" href="contact">Contact Us</a>
                         </div>
@@ -109,30 +111,53 @@
     <div id="header">
         <div class='container'>
             <div class='gr-12'>
-                <div class='gr-padding-10 gr-row gr-row-align-middle'>
+                <div class='gr-row gr-row-align-middle'>
                     <div class='gr-3 gr-2-m gr-2-p'>
-                        <a id="logo" href="/binary-mt/id/home.html">
-                            <div class='gr-row'>
-                                <div class='gr-3 gr-12-m gr-12-p gr-no-gutter'>
-                                    <img class='responsive' src="/binary-mt/images/pages/binary-symbol-logo.svg" />
+                        <a id="logo" href="javascript:;">
+                            <div class='gr-row logo-parent'>
+                                <div class='gr-3 gr-12-m gr-12-p gr-no-gutter logo'>
+                                    <img class='responsive' src="https://style.binary.com/images/logo/symbol.svg" />
                                 </div>
-                                <div class='gr-9 gr-hide-m gr-hide-p' id='binary-logo-text'>
-                                    <img class='responsive' src="/binary-mt/images/pages/binary-type-logo.svg" />
+                                <div class='gr-9 gr-hide-m gr-hide-p binary-logo-text'>
+                                    <img class='responsive' src="https://style.binary.com/images/logo/type.svg" />
                                 </div>
                             </div>
                         </a>
                     </div>
                     <div class='gr-6 gr-hide-m gr-hide-p'></div>
-                    <div id="client-logged-in" class="gr-3 gr-8-m gr-8-p gr-no-gutter by_client_type client_real client_virtual align-end" style="display: none">
-                      <div id="logout">
-                        <form id="loginid-switch-form">
-                            <div id="login-fields">
-                                <select id="client_loginid" name="client_loginid">
-                                </select>
-                            </div>
-                            <div id="balance"></div>
-                            <a id="btn_logout" class="logout" href="javascript:;">LOG OUT</a>
-                        </form>
+                    <div id="client-logged-in" class="gr-3 gr-7-m gr-8-p gr-no-gutter by_client_type client_real client_virtual center-text invisible">
+                      <div id="main-logout">
+                        <ul id="main-account" class="nav-menu main-nav">
+                            <li class="account">
+                                <a href="javascript:;">
+                                    <div class="main-account">
+                                        <div class="account-type"></div>
+                                        <div class="account-id"></div>
+                                        <div class="topMenuBalance">0</div>
+                                    </div>
+                                    <div class="nav-caret"></div>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul id="all-accounts" class="nav-menu main-nav">
+                            <li class="account">
+                                <a href="javascript:;">
+                                    <div class="main-account">
+                                        <div class="account-type"></div>
+                                        <div class="account-id"></div>
+                                        <div class="topMenuBalance">0</div>
+                                    </div>
+                                    <div class="nav-caret"></div>
+                                </a>
+                                <ul>
+                                    <div class="separator-line-thin-gray"></div>
+                                    <div class="login-id-list"></div>
+                                    <a href="javascript:;" id="btn_logout" class="logout">
+                                        <li>Sign out</li>
+                                    </a>
+                                </ul>
+                            </li>
+                        </ul>
                       </div>
                     </div>
                     <div id="client-logged-out" class="gr-3 gr-8-m gr-8-p gr-no-gutter by_client_type client_logged_out invisible">
@@ -187,78 +212,110 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         
         <div class="container">
 
-<div class="gr-row">
-    <div class="gr-12">
-      <h1>
-        Volatility Indices Contract Specifications
-      </h1>
+<div id="contract-specs" class="gr-row">
+  <div class="gr-12">
+    <h1>Volatility Indices Contract Specifications</h1>
+    <div class="table-container">
       <table>
-      <thead>
+        <thead>
           <tr>
-              <th>Symbol</th>
-              <th>Volatility 100 Index</th>
-              <th>Volatility 75 Index</th>
-              <th>Volatility 50 Index</th>
-              <th>Volatility 25 Index</th>
+            <th>Symbol</th>
+            <th>Volatility 100 Index</th>
+            <th>Volatility 75 Index</th>
+            <th>Volatility 50 Index</th>
+            <th>Volatility 25 Index</th>
+            <th>Volatility 10 Index</th>
+            <th data-balloon="High frequency (2 ticks per second)">HF Volatility 100 Index</th>
+            <th data-balloon="High frequency (2 ticks per second)">HF Volatility 50 Index</th>
+            <th data-balloon="High frequency (2 ticks per second)">HF Volatility 10 Index</th>
           </tr>
-      </thead>
-      <tbody>
+        </thead>
+        <tbody>
           <tr>
-              <td>Volume (Trade Size)</td>
-              <td>&#36;1/point</td>
-              <td>&#36;1/point</td>
-              <td>&#36;1/point</td>
-              <td>&#36;1/point</td>
-          </tr>
-          <tr>
-              <td>Minimum Volume (Trade Size)</td>
-              <td>0.01</td>
-              <td>0.01</td>
-              <td>0.01</td>
-              <td>0.01</td>
-          </tr>
-          <tr>
-              <td>Maximum Volume (Trade Size)</td>
-              <td>100</td>
-              <td>100</td>
-              <td>100</td>
-              <td>100</td>
+            <td>Volume (Trade Size)</td>
+            <td>&#36;1/point</td>
+            <td>&#36;1/point</td>
+            <td>&#36;1/point</td>
+            <td>&#36;1/point</td>
+            <td>&#36;1/point</td>
+            <td>&#36;1/point</td>
+            <td>&#36;1/point</td>
+            <td>&#36;1/point</td>
           </tr>
           <tr>
-              <td>Minimum Increment (Volume)</td>
-              <td>0.01</td>
-              <td>0.01</td>
-              <td>0.01</td>
-              <td>0.01</td>
+            <td>Minimum Volume (Trade Size)</td>
+            <td>0.01</td>
+            <td>0.01</td>
+            <td>0.5</td>
+            <td>0.5</td>
+            <td>0.1</td>
+            <td>0.01</td>
+            <td>0.5</td>
+            <td>0.1</td>
           </tr>
           <tr>
-              <td>Pip Size</td>
-              <td>0.01</td>
-              <td>0.0001</td>
-              <td>0.0001</td>
-              <td>0.001</td>
+            <td>Maximum Volume (Trade Size)</td>
+            <td>10</td>
+            <td>10</td>
+            <td>10</td>
+            <td>10</td>
+            <td>10</td>
+            <td>2</td>
+            <td>2</td>
+            <td>2</td>
           </tr>
           <tr>
-              <td>Minimum Spread*</td>
-              <td>0.025%</td>
-              <td>0.018%</td>
-              <td>0.012%</td>
-              <td>0.006%</td>
+            <td>Minimum Increment (Volume)</td>
+            <td>0.01</td>
+            <td>0.01</td>
+            <td>0.01</td>
+            <td>0.01</td>
+            <td>0.01</td>
+            <td>0.01</td>
+            <td>0.01</td>
+            <td>0.01</td>
           </tr>
           <tr>
-              <td>Maximum Leverage**</td>
-              <td>100:1</td>
-              <td>100:1</td>
-              <td>100:1</td>
-              <td>100:1</td>
+            <td>Pip Size</td>
+            <td>0.01</td>
+            <td>0.0001</td>
+            <td>0.0001</td>
+            <td>0.001</td>
+            <td>0.001</td>
+            <td>0.001</td>
+            <td>0.001</td>
+            <td>0.001</td>
           </tr>
-      </tbody>
-  </table>
-  <p>* Minimum Spread is a percentage of the underlying market price, and can change over time.</p>
-  <p>** Leverage of 100:1 results in a margin rate of 0.01.</p>
-  <p><strong>Margin Policy:</strong> The forced liquidation level is 50%. Please refer to our <a href='/binary-mt/id/margin-policy.html'>Margin Policy</a> for further details.</p>
+          <tr>
+            <td>Minimum Spread*</td>
+            <td>0.025%</td>
+            <td>0.018%</td>
+            <td>0.012%</td>
+            <td>0.006%</td>
+            <td>0.002%</td>
+            <td>0.025%</td>
+            <td>0.012%</td>
+            <td>0.002%</td>
+          </tr>
+          <tr>
+            <td>Maximum Leverage**</td>
+            <td>300:1</td>
+            <td>300:1</td>
+            <td>300:1</td>
+            <td>300:1</td>
+            <td>300:1</td>
+            <td>100:1</td>
+            <td>100:1</td>
+            <td>100:1</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+    <p>* Minimum Spread is a percentage of the underlying market price, and can change over time.</p>
+    <p>** Leverage of 100:1 results in a margin rate of 0.01 and leverage of 300:1 results in a margin rate of 0.03.</p>
+    <p><strong>Margin Policy:</strong> The forced liquidation level is 50%. Please refer to our <a href="/binary-mt/id/margin-policy.html">Margin Policy</a> for further details.</p>
   </div>
+</div>
 
 
   </div>

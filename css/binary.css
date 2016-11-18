@@ -136,7 +136,7 @@ acronym, abbr {
   cursor: help;
 }
 
-span.button.button-disabled button.button-disabled {
+span.button.button-disabled, button.button-disabled, button.button-disabled:hover {
   color: #C2C2C2;
   background: #F2F2F2;
   cursor: default;
@@ -312,33 +312,12 @@ img.small {
   text-decoration: none;
 }
 
-*, *:after, *:before {
-  transition: opacity 0.2s, color 0.2s, background 0.2s;
+div ul li.no-bullet {
+  list-style-image: none;
 }
 
-@keyframes spinning {
-  from {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
-  }
-}
-@-webkit-keyframes spinning {
-  from {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
-  }
-}
-.spinner {
-  -webkit-animation: spinning 1s infinite linear;
-  animation: spinning 1s infinite linear;
+*, *:after, *:before {
+  transition: opacity 0.2s, color 0.2s, background 0.2s;
 }
 
 /* main style */
@@ -357,6 +336,10 @@ img.small {
   -webkit-align-self: center;
       -ms-flex-item-align: center;
           align-self: center;
+}
+#topbar #gmt-clock {
+  display: inline-block;
+  min-width: 210px;
 }
 #topbar .upgrademessage a {
   color: #fff;
@@ -410,46 +393,11 @@ img.small {
 #header #binary-logo-text img {
   width: 90%;
 }
+#header #client-logged-out {
+  text-align: right;
+}
 #header #client-logged-out #btn_login {
   margin-bottom: 0;
-}
-#header #client-logged-out, #header #loginid-switch-form {
-  text-align: right;
-}
-#header #logout {
-  text-align: right;
-  color: #fff;
-  font-size: 70%;
-  display: inline-block;
-}
-#header #logout a:hover, #header #logout a:active, #header #logout a:visited:hover, #header #logout a:visited:active {
-  text-decoration: underline;
-}
-#header #logout a.logout, #header #logout a:visited.logout {
-  color: #fff;
-  text-decoration: none;
-  text-align: center;
-  line-height: 100%;
-  background: #2E8836;
-  border-radius: 3px;
-  text-transform: capitalize;
-  padding: 10px 25px 10px 25px;
-  display: inline-block;
-  letter-spacing: 0.75px;
-  background-position: 104.6% 0.3%;
-  background-repeat: no-repeat;
-  padding: 6px;
-  font-weight: normal;
-  margin-left: 0.4em;
-  margin-top: 0.5em;
-  text-transform: uppercase;
-}
-#header #logout a.logout:visited, #header #logout a:visited.logout:visited {
-  color: #fff;
-}
-#header #logout a.logout:hover, #header #logout a.logout:active, #header #logout a:visited.logout:hover, #header #logout a:visited.logout:active {
-  text-decoration: none;
-  background-color: #14602B;
 }
 #header #mobile-menu-icon img {
   max-width: 32px;
@@ -457,6 +405,58 @@ img.small {
 #header #mobile-menu-icon-container {
   margin-top: 5px;
   margin-right: 3px;
+}
+#header #menu-top {
+  text-align: center;
+  white-space: nowrap;
+}
+#header #menu-top a:hover {
+  opacity: 0.75;
+}
+#header #menu-top li {
+  line-height: 1;
+  display: inline-block;
+  text-align: center;
+  margin: 0;
+  white-space: normal;
+}
+#header #menu-top li:last-child {
+  background: none;
+}
+#header #menu-top li a {
+  font-weight: normal;
+  vertical-align: middle;
+  display: table-cell;
+  height: 50px;
+  max-width: 110px;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: 0;
+  text-transform: capitalize;
+  padding: 0px 10px;
+  word-wrap: break-word;
+}
+#header #menu-top li.active a {
+  color: #e98024;
+}
+#header .main-nav > li > ul {
+  margin: -20px -1px;
+}
+#header .main-nav .nav-caret {
+  right: -68px;
+  left: initial;
+}
+#header .topMenuBalance {
+  visibility: hidden;
+}
+#header #main-logout {
+  float: right;
+}
+#header #main-logout .main-account > .account-type {
+  white-space: nowrap;
+}
+#header #all-accounts {
+  z-index: 99;
 }
 
 #footer #footer-menu {
@@ -627,19 +627,6 @@ img.small {
   line-height: 2;
 }
 
-meter#password-meter {
-  display: block;
-  width: 10.9em;
-  height: 0.5em;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
-
-meter#password-meter::-webkit-meter-bar {
-  background: #F2F2F2;
-  box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.25) inset;
-}
-
 #accordion .ui-accordion-content, .accordion .ui-accordion-content {
   padding-top: 0;
 }
@@ -656,17 +643,26 @@ meter#password-meter::-webkit-meter-bar {
   margin-bottom: 20px;
 }
 
+#contract-specs table td {
+  font-size: 0.9em;
+  text-align: center;
+}
+#contract-specs table td:first-child {
+  white-space: nowrap;
+  font-size: inherit;
+  text-align: left;
+}
+
+@media screen and (max-width: 768px) {
+  .table-container {
+    overflow-x: auto;
+  }
+}
+.tac-content .tab-menu {
+  margin-bottom: 25px;
+}
+
 /* static pages */
-#balance {
-  float: left;
-  padding-left: 8px;
-  margin-top: 1em;
-}
-
-#client_loginid {
-  min-width: 210px;
-}
-
 .big-error-code {
   color: #DEDEDE;
   font-size: 10em;
